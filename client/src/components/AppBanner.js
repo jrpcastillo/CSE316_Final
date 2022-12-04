@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import logo from '../resources/Playlister.png';
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
@@ -50,8 +51,8 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
             <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 
@@ -98,9 +99,18 @@ export default function AppBanner() {
 
     return (
         <Box sx={{ flexGrow: 1 , height: '8%'}}>
-            <AppBar position="static">
+            <AppBar position="static" style={{ background: '#ffffff' }}>
                 <Toolbar>
-                    <Typography                        
+                    <Box
+                        component="img"
+                        sx={{
+                            maxHeight: '100%',
+                            maxWidth: 150
+                        }}
+                        alt="Playlister"
+                        src={logo}
+                    />
+                    {/* <Typography                        
                         variant="h4"
                         noWrap
                         component="div"
@@ -116,7 +126,7 @@ export default function AppBanner() {
                         >
                             ⌂
                         </Link>
-                    </Typography>
+                    </Typography> */}
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         <IconButton
@@ -127,7 +137,7 @@ export default function AppBanner() {
                             aria-haspopup="true"
                             disabled={cardStatus}
                             onClick={handleProfileMenuOpen}
-                            color="inherit"
+                            
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>
