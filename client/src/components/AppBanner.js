@@ -118,7 +118,7 @@ export default function AppBanner() {
                         </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         <IconButton
                             size="large"
                             edge="end"
