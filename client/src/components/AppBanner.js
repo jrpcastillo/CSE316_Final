@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
+import { useHistory } from 'react-router-dom'
 
 import EditToolbar from './EditToolbar'
 
@@ -14,12 +15,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import logo from '../resources/Playlister.png';
+import Button from '@mui/material/Button';
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+    store.history = useHistory();
+
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -28,6 +32,16 @@ export default function AppBanner() {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const handleRegister = () => {
+        setAnchorEl(null);
+        store.history.push('/register');
+    }
+
+    const handleLogin = () => {
+        setAnchorEl(null);
+        store.history.push('/login');
+    }
 
     const handleLogout = () => {
         handleMenuClose();
@@ -50,9 +64,12 @@ export default function AppBanner() {
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
+            disableScrollLock={true}
         >
-            <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
+            <MenuItem onClick={handleRegister}>Create New Account</MenuItem>
+            <MenuItem onClick={handleLogin}>Login</MenuItem>
+            {/* <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem> */}
         </Menu>
     );
     const loggedInMenu = 
@@ -70,6 +87,7 @@ export default function AppBanner() {
             }}
             open={isMenuOpen}
             onClose={handleMenuClose}
+            disableScrollLock={true}
         >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>        
