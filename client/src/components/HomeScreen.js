@@ -75,11 +75,13 @@ const HomeScreen = () => {
             <List sx={{ width: '100%', alignItems: 'center' }}>
             {
                 store.idNamePairs.map((pair) => (
-                    <ListCard
-                        key={pair._id}
-                        idNamePair={pair}
-                        selected={false}
-                    />
+                    <Grid item xs={12} sx={{ ml: 1, mb: 1 }}>
+                        <ListCard
+                            key={pair._id}
+                            idNamePair={pair}
+                            selected={false}
+                        />
+                    </Grid>
                 ))
             }
             </List>;
@@ -196,7 +198,7 @@ const HomeScreen = () => {
             { menu }
             <Grid container sx={{ height: '93%' }}>
                 <Grid item xs={7.2} sx={{ overflowY: 'auto', height: '100%'}}>
-                    <Grid container rowSpacing={2}>
+                    <Grid container>
                         {/* <Grid item xs={12}>
                             listCard
                         </Grid> */}
@@ -204,7 +206,9 @@ const HomeScreen = () => {
                     </Grid>
                 </Grid>
                 <Grid item xs={4.8}>
-                    asdasdasd
+                    <Grid container sx={{ height: '100%'}}>
+                        test
+                    </Grid>
                 </Grid>
             </Grid>
         </Box>

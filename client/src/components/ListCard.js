@@ -77,7 +77,7 @@ function ListCard(props) {
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1, border: 1 , borderColor: 'primary'}}
+            sx={{ display: 'flex', border: 1 , borderColor: 'primary'}}
             style={{ width: '100%', fontSize: '24pt'}}
             button
             disabled={cardStatus}
