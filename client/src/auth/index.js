@@ -52,8 +52,8 @@ function AuthContextProvider(props) {
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
-                    user: payload.user,
-                    loggedIn: true,
+                    user: null,
+                    loggedIn: false,
                     errorMessage: ""
                 })
             }
@@ -89,7 +89,8 @@ function AuthContextProvider(props) {
                 authReducer({
                     type: AuthActionType.REGISTER_USER,
                     payload: {
-                        user: response.data.user
+                        // no need for a payload if not automatically logging in
+                        // user: response.data.user
                     }
                 })
                 history.push("/");

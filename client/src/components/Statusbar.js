@@ -47,7 +47,7 @@ function Statusbar() {
             return (
                 <Box sx={{...style}}>
                     <Fab 
-                        color="primary" 
+                        color="error" 
                         size="small"
                         aria-label="add"
                         id="add-list-button"
