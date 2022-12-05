@@ -120,7 +120,9 @@ getPlaylistPairs = async (req, res) => {
         console.log("find user with id " + req.userId);
         async function asyncFindList(email) {
             console.log("find all Playlists owned by " + email);
-            await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+            await Playlist.find({ ownerEmail: email },
+                                { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, isPublished: 1},
+                                (err, playlists) => {
                 console.log("found Playlists: " + JSON.stringify(playlists));
                 if (err) {
                     return res.status(400).json({ success: false, error: err })
@@ -134,16 +136,17 @@ getPlaylistPairs = async (req, res) => {
                 else {
                     console.log("Send the Playlist pairs");
                     // PUT ALL THE LISTS INTO ID, NAME PAIRS
-                    let pairs = [];
-                    for (let key in playlists) {
-                        let list = playlists[key];
-                        let pair = {
-                            _id: list._id,
-                            name: list.name
-                        };
-                        pairs.push(pair);
-                    }
-                    return res.status(200).json({ success: true, idNamePairs: pairs })
+                    // let pairs = [];
+                    // for (let key in playlists) {
+                    //     let list = playlists[key];
+                    //     let pair = {
+                    //         _id: list._id,
+                    //         name: list.name
+                    //     };
+                    //     pairs.push(pair);
+                    // }
+                    // return res.status(200).json({ success: true, idNamePairs: pairs })
+                    return res.status(200).json({ success: true, idNamePairs: playlists })
                 }
             }).catch(err => console.log(err))
         }
@@ -162,13 +165,13 @@ getPlaylists = async (req, res) => {
         }
     }).catch(err => console.log(err))
     
-    console.log("getPlaylistsAsArr");
+    console.log("Getting owned playlists...");
     await User.findOne({ _id: req.userId }, (err, user) => {
-        console.log("find user with id " + req.userId);
+        console.log("Current User exists: " + req.userId);
         async function asyncFindList(email) {
-            console.log("find all Playlists owned by " + email);
+            console.log("Now compiling all owned playlists for User with email: " + email);
             await Playlist.find({ ownerEmail: email }, (err, playlists) => {
-                console.log("found Playlists: " + JSON.stringify(playlists));
+                console.log("Found: " + JSON.stringify(playlists));
                 if (err) {
                     return res.status(400).json({ success: false, error: err })
                 }
@@ -176,16 +179,76 @@ getPlaylists = async (req, res) => {
                     console.log("!playlists.length");
                     return res
                         .status(404)
-                        .json({ success: false, error: 'Playlists not found' })
+                        .json({ success: false, error: 'No owned playlists :c' })
                 }
                 else {
-                    console.log("Sending playlistsAsArr...")
+                    console.log("Sending owned playlists...")
                     return res.status(200).json({ success: true, data: playlists})
                 }
             }).catch(err => console.log(err))
         }
         asyncFindList(user.email);
     }).catch(err => console.log(err))
+}
+getOtherPlaylists = async (req, res) => {
+    const body = req.body;
+    console.log(body.username);
+    await Playlist.find({}, (err, playlists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!playlists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Playlists not found` })
+        }
+    }).catch(err => console.log(err))
+
+    async function asyncFindOtherList(req){
+        console.log("Finding lists that is published by usernames containing " + req);
+        let text = "z"
+        let regex = new RegExp(text, "i");
+        await Playlist.find({ ownerUser: { $regex: regex } , isPublished: true },
+                            { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, isPublished: 1},
+                            (err, playlists) => {
+            console.log("Found:  " + JSON.stringify(playlists));
+            if (err) {
+                return res.status(400).json({ success: false, error: err})
+            }
+            if (!playlists) {
+                console.log("!playlists.length");
+                return res
+                    .status(404)
+                    .json({ success: false, error: 'No playlists found :c' })
+            }
+            else {
+                console.log("Sending found public playlists matching user regex...");
+                return res.status(200).json({ success: true, idNamePairs: playlists })
+            }
+        })
+    }
+    asyncFindOtherList(req);
+}
+getPublicPlaylists = async (req, res) => {
+    console.log("Getting all published playlists...");
+    await Playlist.find({ isPublished: true },
+                        { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, isPublished: 1},
+                        (err, playlists)=> {
+        console.log("Found: " + JSON.stringify(playlists));
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!playlists) {
+            console.log("!playlists.length");
+            return res
+                .status(404)
+                .json({ success: false, error: 'No playlists found :c'})
+        }
+        else {
+            console.log("Sending found public playlists...");
+            return res.status(200).json({ success: true, idNamePairs: playlists })
+        }
+    })
 }
 updatePlaylist = async (req, res) => {
     const body = req.body
@@ -252,5 +315,7 @@ module.exports = {
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
-    updatePlaylist
+    updatePlaylist,
+    getOtherPlaylists,
+    getPublicPlaylists
 }

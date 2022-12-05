@@ -24,12 +24,15 @@ import AuthContext from '../auth';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton';
+import { useFormControl } from '@mui/material/FormControl';
+
 
 
 const HomeScreen = () => {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [text, setText] = useState("");
     const isMenuOpen = Boolean(anchorEl);
 
     const handleSortMenuOpen = (event) => {
@@ -54,12 +57,42 @@ const HomeScreen = () => {
         // sorting method for last edit date
     }
 
+    const handleViewOwnLists = () => {
+        currentView = 'home-view';
+        store.loadIdNamePairs();
+    }
+
+    const handleViewAllLists = () => {
+        currentView = 'all-view';
+        store.getPublicPlaylists();
+    }
+
+    const handleViewUserLists = () => {
+        currentView = 'user-view';
+        store.getPublicPlaylists();
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log(text);
+        store.getOtherPlaylists(text);
+    }
+
     // keybinds for undo/redo if needed
     // document.onkeydown = store.handleAppKeyDown;
     // document.onkeyup = store.handleAppKeyUp;
 
+    let currentView;
     useEffect(() => {
-        store.loadIdNamePairs();
+        console.log("passed useEffect")
+        if (auth.loggedIn) {
+            currentView = 'home-view';
+            store.loadIdNamePairs();
+        } else {
+            currentView = 'all-view';
+            store.getPublicPlaylists();
+        }
+        
     }, []);
 
     function handleCreateNewList() {
@@ -121,6 +154,11 @@ const HomeScreen = () => {
 
     // checks if other buttons should be disabled during foolproof
     const foolProofStatus = false;
+
+    // searchbar
+    useFormControl(()=> {
+
+    })
     
 
     return (
@@ -151,26 +189,46 @@ const HomeScreen = () => {
                     <Grid container spacing={2} justifyContent="flex-start" alignItems="center">
                         {/* home icon */}
                         <Grid item sx={{ ml: 1 }}>
-                            <HomeIcon></HomeIcon>
+                            <IconButton
+                                id='home-view'
+                                disabled={foolProofStatus}
+                                onClick={handleViewOwnLists}
+                                sx={{ border: ('home-view' == currentView ? 2 : 0), borderColor: 'primary' }}
+                            >
+                                <HomeIcon />
+                            </IconButton>
                         </Grid>
                         <Grid item>
-                            <GroupsIcon></GroupsIcon>
+                            <IconButton
+                                id='all-view'
+                                disabled={foolProofStatus}
+                                onClick={handleViewAllLists}
+                                sx={{ border: ('all-view' == currentView ? 2 : 0), borderColor: 'primary' }}
+                            >
+                                <GroupsIcon />
+                            </IconButton>
                         </Grid>
                         <Grid item>
-                            <PersonIcon></PersonIcon>
+                            <IconButton
+                                id='user-view'
+                                disabled={foolProofStatus}
+                                onClick={handleViewUserLists}
+                                sx={{ border: ('user-view' == currentView ? 2 : 0), borderColor: 'primary' }}
+                            >
+                                <PersonIcon />
+                            </IconButton>
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={6}>
                     {/* search bar */}
-                    <Paper component="form" sx={{  }}>
+                    <Paper component="form" sx={{  }} onSubmit={handleSubmit}>
                         <InputBase
                             sx={{ ml: 1, flex: 1 }}
                             placeholder="Search"
                             inputProps={{ 'aria-label': 'search playlists'}}
-                        >
-
-                        </InputBase>
+                            onChange={e => setText(e.target.value)}
+                        />  
                     </Paper>
                 </Grid>
                 <Grid item xs={3}>
