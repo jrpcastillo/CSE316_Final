@@ -31,7 +31,7 @@ export const createPlaylist = (newListName, userName, userEmail) => {
         listens: 0,
         likes: 0,
         dislikes: 0,
-        isPublished: false,
+        publishDate: new Date(0),
         comments: [],
         songs: [],
     })
@@ -47,7 +47,7 @@ export const updatePlaylistById = (id, playlist) => {
 }
 // new routes
 export const getPlaylists = () => api.get(`/playlists/`)
-export const getOtherPlaylists = (user) => { return api.get(`/otherplaylists/`, { username: user })}
+export const getOtherPlaylists = (username) => api.get(`/otherplaylists/${username}`)
 export const getPublicPlaylists = () => api.get(`/publicplaylists/`)
 
 const apis = {

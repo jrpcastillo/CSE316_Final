@@ -30,7 +30,8 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     EDIT_SONG: "EDIT_SONG",
     REMOVE_SONG: "REMOVE_SONG",
-    HIDE_MODALS: "HIDE_MODALS"
+    HIDE_MODALS: "HIDE_MODALS",
+    RESET_SPACE: "RESET_SPACE"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -127,6 +128,20 @@ function GlobalStoreContextProvider(props) {
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            case GlobalStoreActionType.RESET_SPACE: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: [],
+                    currentList: null,
+                    expandedList: null,
+                    currentSongIndex : -1,
+                    currentSong : null,
+                    newListCounter: 0,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null
@@ -308,11 +323,18 @@ function GlobalStoreContextProvider(props) {
         asyncLoadIdNamePairs();
     }
 
+    store.clearIdNamePairs = function () {
+        storeReducer({
+            type: GlobalStoreActionType.RESET_SPACE
+        })
+    }
+
     // gets playlists based on search
     store.getOtherPlaylists = function (match) {
         console.log("here");
         async function asyncLoadOtherPlaylists(match) {
             console.log("here2" + match)
+            console.log(match);
             const response = await api.getOtherPlaylists(match);
             if (response.data.success) {
                 console.log("here3");

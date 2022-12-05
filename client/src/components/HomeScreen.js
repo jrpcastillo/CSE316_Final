@@ -34,6 +34,7 @@ const HomeScreen = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [text, setText] = useState("");
     const isMenuOpen = Boolean(anchorEl);
+    const [viewMode, setViewMode] = useState(0);
 
     const handleSortMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -57,19 +58,35 @@ const HomeScreen = () => {
         // sorting method for last edit date
     }
 
+    const handleSortPublishDate = () => {
+        setAnchorEl(null);
+    }
+
+    const handleSortListens = () => {
+        setAnchorEl(null);
+    }
+
+    const handleSortLikes = () => {
+        setAnchorEl(null);
+    }
+
+    const handleSortDislikes = () => {
+        setAnchorEl(null);
+    }
+
     const handleViewOwnLists = () => {
-        currentView = 'home-view';
+        setViewMode(0);
         store.loadIdNamePairs();
     }
 
     const handleViewAllLists = () => {
-        currentView = 'all-view';
+        setViewMode(1);
         store.getPublicPlaylists();
     }
 
     const handleViewUserLists = () => {
-        currentView = 'user-view';
-        store.getPublicPlaylists();
+        setViewMode(2);
+        store.clearIdNamePairs();
     }
 
     const handleSubmit = (event) => {
@@ -82,17 +99,15 @@ const HomeScreen = () => {
     // document.onkeydown = store.handleAppKeyDown;
     // document.onkeyup = store.handleAppKeyUp;
 
-    let currentView;
     useEffect(() => {
         console.log("passed useEffect")
         if (auth.loggedIn) {
-            currentView = 'home-view';
+            setViewMode(0);
             store.loadIdNamePairs();
         } else {
-            currentView = 'all-view';
+            setViewMode(1);
             store.getPublicPlaylists();
-        }
-        
+        }   
     }, []);
 
     function handleCreateNewList() {
@@ -126,15 +141,19 @@ const HomeScreen = () => {
         modalJSX = <MUIDeleteModal />;
     }
 
+    // Using the proper account circle
+    let menuId = 'guest-account-view';
+    if (auth.loggedIn) {
+        menuId = 'logged-account-view';
+    }
+
     // Using the appropriate Sorting Menu
-    let menuId = 'guest-account-menu'; // default, when not logged in
     let menu = <Menu
                     anchorEl={anchorEl}
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'right',
                     }}
-                    id={menuId}
                     keepMounted
                     transformOrigin={{
                         vertical: 'top',
@@ -148,8 +167,28 @@ const HomeScreen = () => {
                     <MenuItem onClick={handleSortCreationDate}>By Creation Date (Old-New)</MenuItem>
                     <MenuItem onClick={handleSortEditDate}>By Last Edit Date (New-Old)</MenuItem>
                 </Menu>
-    if (auth.loggedIn) {
-        menuId = 'logged-account-menu';
+    if (viewMode != 0) {
+        menu = <Menu
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={isMenuOpen}
+                    onClose={handleSortMenuClose}
+                    disableScrollLock={true}
+                >
+                    <MenuItem onClick={handleSortName}>By Name (A-Z)</MenuItem>
+                    <MenuItem onClick={handleSortPublishDate}>Publish Date (Newest)</MenuItem>
+                    <MenuItem onClick={handleSortListens}>Listens (High-Low)</MenuItem>
+                    <MenuItem onClick={handleSortLikes}>Likes (High-Low)</MenuItem>
+                    <MenuItem onClick={handleSortDislikes}>Dislikes (High-Low)</MenuItem>
+                </Menu>;
     }
 
     // checks if other buttons should be disabled during foolproof
@@ -193,7 +232,7 @@ const HomeScreen = () => {
                                 id='home-view'
                                 disabled={foolProofStatus}
                                 onClick={handleViewOwnLists}
-                                sx={{ border: ('home-view' == currentView ? 2 : 0), borderColor: 'primary' }}
+                                sx={(viewMode == 0) ? { border: 2, borderColor: 'primary' } : {}}
                             >
                                 <HomeIcon />
                             </IconButton>
@@ -203,7 +242,7 @@ const HomeScreen = () => {
                                 id='all-view'
                                 disabled={foolProofStatus}
                                 onClick={handleViewAllLists}
-                                sx={{ border: ('all-view' == currentView ? 2 : 0), borderColor: 'primary' }}
+                                sx={(viewMode == 1) ? { border: 2, borderColor: 'primary' } : {}}
                             >
                                 <GroupsIcon />
                             </IconButton>
@@ -213,7 +252,7 @@ const HomeScreen = () => {
                                 id='user-view'
                                 disabled={foolProofStatus}
                                 onClick={handleViewUserLists}
-                                sx={{ border: ('user-view' == currentView ? 2 : 0), borderColor: 'primary' }}
+                                sx={(viewMode == 2) ? { border: 2, borderColor: 'primary' } : {}}
                             >
                                 <PersonIcon />
                             </IconButton>
@@ -224,7 +263,7 @@ const HomeScreen = () => {
                     {/* search bar */}
                     <Paper component="form" sx={{  }} onSubmit={handleSubmit}>
                         <InputBase
-                            sx={{ ml: 1, flex: 1 }}
+                            sx={{ ml: 1, width: '95%', overflowX: 'hidden' }}
                             placeholder="Search"
                             inputProps={{ 'aria-label': 'search playlists'}}
                             onChange={e => setText(e.target.value)}

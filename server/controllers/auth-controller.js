@@ -141,6 +141,23 @@ registerUser = async (req, res) => {
                     errorMessage: "An account with this username already exists."
                 })
         }
+        if (username.indexOf(' ') >= 0) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "Username must not contain spaces."
+                })
+        }
+        const regex = /\S+@\S+\.\S+/;
+        if (!regex.test(email.trim())) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "Email format is invalid."
+                })
+        }
 
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
