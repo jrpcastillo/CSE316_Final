@@ -51,6 +51,12 @@ export const getOtherPlaylists = (username) => api.get(`/otherplaylists/${userna
 export const getMatchingPlaylists = (name) => api.get(`/matchingplaylists/${name}`)
 export const getOwnMatchingPlaylists = (name) => api.get(`/ownmatchingplaylists/${name}`)
 export const getPublicPlaylists = () => api.get(`/publicplaylists/`)
+export const updateListStats = (id, arr) => {
+    return api.put(`/updatestats/${id}`, {
+        // body indicating which info to update and how
+        arr: arr
+    })
+}
 
 const apis = {
     createPlaylist,
@@ -62,7 +68,8 @@ const apis = {
     getOtherPlaylists,
     getPublicPlaylists,
     getMatchingPlaylists,
-    getOwnMatchingPlaylists
+    getOwnMatchingPlaylists,
+    updateListStats
 }
 
 export default apis

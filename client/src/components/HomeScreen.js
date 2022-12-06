@@ -34,7 +34,6 @@ const HomeScreen = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [text, setText] = useState("");
     const isMenuOpen = Boolean(anchorEl);
-    const [viewMode, setViewMode] = useState(0);
 
     const handleSortMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -75,17 +74,14 @@ const HomeScreen = () => {
     }
 
     const handleViewOwnLists = () => {
-        setViewMode(0);
         store.loadIdNamePairs();
     }
 
     const handleViewAllLists = () => {
-        setViewMode(1);
         store.getPublicPlaylists();
     }
 
     const handleViewUserLists = () => {
-        setViewMode(2);
         store.clearIdNamePairs();
     }
 
@@ -95,10 +91,10 @@ const HomeScreen = () => {
         if (text === "") {
             store.clearIdNamePairs();
         }
-        else if (viewMode == 0) {
+        else if (store.viewMode == 0) {
             store.getOwnMatchingPlaylists(text);
         }
-        else if (viewMode == 1) {
+        else if (store.viewMode == 1) {
             store.getMatchingPlaylists(text);
         }
         else {
@@ -113,10 +109,8 @@ const HomeScreen = () => {
     useEffect(() => {
         console.log("passed useEffect")
         if (auth.loggedIn) {
-            setViewMode(0);
             store.loadIdNamePairs();
         } else {
-            setViewMode(1);
             store.getPublicPlaylists();
         }   
     }, []);
@@ -131,19 +125,19 @@ const HomeScreen = () => {
         console.log('refreshed');
         console.log(store);
         listCard = 
-            <List sx={{ width: '100%', alignItems: 'center' }}>
-            {
-                store.idNamePairs.map((pair) => (
-                    <Grid item xs={12} sx={{ ml: 1, mb: 1 }}>
-                        <ListCard
-                            key={pair._id}
-                            idNamePair={pair}
-                            selected={false}
-                        />
-                    </Grid>
-                ))
-            }
-            </List>;
+            <Grid item xs={12}>
+                <List sx={{ maxWidth: '100%', alignItems: 'center', pl: 1, pr: 1}}>
+                {
+                    store.idNamePairs.map((pair) => (
+                            <ListCard
+                                key={pair._id}
+                                idNamePair={pair}
+                                selected={false}
+                            />
+                    ))
+                }
+                </List>
+            </Grid>
     }
 
     // Checking for Modals
@@ -178,7 +172,7 @@ const HomeScreen = () => {
                     <MenuItem onClick={handleSortCreationDate}>By Creation Date (Old-New)</MenuItem>
                     <MenuItem onClick={handleSortEditDate}>By Last Edit Date (New-Old)</MenuItem>
                 </Menu>
-    if (viewMode != 0) {
+    if (store.viewMode != 0) {
         menu = <Menu
                     anchorEl={anchorEl}
                     anchorOrigin={{
@@ -243,7 +237,7 @@ const HomeScreen = () => {
                                 id='home-view'
                                 disabled={foolProofStatus}
                                 onClick={handleViewOwnLists}
-                                sx={(viewMode == 0) ? { border: 2, borderColor: 'primary' } : {}}
+                                sx={(store.viewMode == 0) ? { border: 2, borderColor: 'primary' } : {}}
                             >
                                 <HomeIcon />
                             </IconButton>
@@ -253,7 +247,7 @@ const HomeScreen = () => {
                                 id='all-view'
                                 disabled={foolProofStatus}
                                 onClick={handleViewAllLists}
-                                sx={(viewMode == 1) ? { border: 2, borderColor: 'primary' } : {}}
+                                sx={(store.viewMode == 1) ? { border: 2, borderColor: 'primary' } : {}}
                             >
                                 <GroupsIcon />
                             </IconButton>
@@ -263,7 +257,7 @@ const HomeScreen = () => {
                                 id='user-view'
                                 disabled={foolProofStatus}
                                 onClick={handleViewUserLists}
-                                sx={(viewMode == 2) ? { border: 2, borderColor: 'primary' } : {}}
+                                sx={(store.viewMode == 2) ? { border: 2, borderColor: 'primary' } : {}}
                             >
                                 <PersonIcon />
                             </IconButton>
@@ -285,7 +279,9 @@ const HomeScreen = () => {
                     <Grid container spacing={2} justifyContent="flex-end" alignItems="center">
                         {/* 'SORT BY' text */}
                         <Grid item>
-                            SORT BY
+                            <Typography>
+                                SORT BY
+                            </Typography>
                         </Grid>
                         <Grid item sx={{ mr: 1 }}>
                             <IconButton

@@ -35,7 +35,7 @@ export default function LoginScreen() {
         <Grid container component="main" maxWidth="xs" sx={{ height: '100vh' }}>
             <MUIAccountErrorModal />
             <CssBaseline />  
-            <Grid item xs={12} elevation={6} square>
+            <Grid item xs={12} elevation={6}>
                 <Box
                     sx={{
                         my: 8,

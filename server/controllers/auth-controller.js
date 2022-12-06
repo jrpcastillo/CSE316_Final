@@ -21,7 +21,10 @@ getLoggedIn = async (req, res) => {
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                username: loggedInUser.username,
+                likedPlaylists: loggedInUser.likedPlaylists,
+                dislikedPlaylists: loggedInUser.dislikedPlaylists
             }
         })
     } catch (err) {
@@ -76,7 +79,9 @@ loginUser = async (req, res) => {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
                 email: existingUser.email,       
-                username: existingUser.username
+                username: existingUser.username,
+                likedPlaylists: existingUser.likedPlaylists,
+                dislikedPlaylists: existingUser.dislikedPlaylists
             }
         })
 
@@ -164,8 +169,9 @@ registerUser = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
         console.log("passwordHash: " + passwordHash);
 
+        let likedPlaylists, dislikedPlaylists = [];
         const newUser = new User({
-            username, email, firstName, lastName, passwordHash
+            username, email, firstName, lastName, passwordHash, likedPlaylists, dislikedPlaylists
         });
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
@@ -184,7 +190,9 @@ registerUser = async (req, res) => {
                 username: savedUser.username,
                 email: savedUser.email,
                 firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
+                lastName: savedUser.lastName,
+                likedPlaylists: savedUser.likedPlaylists,
+                dislikedPlaylists: savedUser.dislikedPlaylists
             }
         })
 

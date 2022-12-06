@@ -72,8 +72,10 @@ function AuthContextProvider(props) {
     auth.getLoggedIn = async function () {
         const response = await api.getLoggedIn();
         if (response.status === 200) {
+            console.log("got log in")
+            console.log(response.data.user)
             authReducer({
-                type: AuthActionType.SET_LOGGED_IN,
+                type: AuthActionType.GET_LOGGED_IN,
                 payload: {
                     loggedIn: response.data.loggedIn,
                     user: response.data.user
@@ -138,6 +140,13 @@ function AuthContextProvider(props) {
             })
             history.push("/");
         }
+    }
+
+    auth.updateLocalUser = function(user) {
+        authReducer({
+            type: AuthActionType.GET_LOGGED_IN,
+            payload: user
+        })
     }
 
     auth.getUserInitials = function() {
