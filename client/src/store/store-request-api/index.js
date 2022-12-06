@@ -48,6 +48,8 @@ export const updatePlaylistById = (id, playlist) => {
 // new routes
 export const getPlaylists = () => api.get(`/playlists/`)
 export const getOtherPlaylists = (username) => api.get(`/otherplaylists/${username}`)
+export const getMatchingPlaylists = (name) => api.get(`/matchingplaylists/${name}`)
+export const getOwnMatchingPlaylists = (name) => api.get(`/ownmatchingplaylists/${name}`)
 export const getPublicPlaylists = () => api.get(`/publicplaylists/`)
 
 const apis = {
@@ -58,7 +60,9 @@ const apis = {
     updatePlaylistById,
     getPlaylists,
     getOtherPlaylists,
-    getPublicPlaylists
+    getPublicPlaylists,
+    getMatchingPlaylists,
+    getOwnMatchingPlaylists
 }
 
 export default apis

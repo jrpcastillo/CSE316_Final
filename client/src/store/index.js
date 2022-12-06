@@ -329,7 +329,7 @@ function GlobalStoreContextProvider(props) {
         })
     }
 
-    // gets playlists based on search
+    // gets playlists based on ownerUser
     store.getOtherPlaylists = function (match) {
         console.log("here");
         async function asyncLoadOtherPlaylists(match) {
@@ -346,10 +346,56 @@ function GlobalStoreContextProvider(props) {
                 })
             }
             else {
-                console.log("API FAILED TO GET PAIRS BY SEARCH")
+                console.log("API FAILED TO GET PAIRS BY USER SEARCH")
             }
         }
         asyncLoadOtherPlaylists(match);
+    }
+
+    // gets public playlists based on name
+    store.getMatchingPlaylists = function (match) {
+        console.log("heee")
+        async function asyncLoadMatchingPlaylists(match) {
+            console.log("heee2" + match);
+            console.log(match);
+            const response = await api.getMatchingPlaylists(match);
+            if (response.data.success) {
+                console.log("heee3")
+                console.log(response.data.idNamePairs);
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                })
+            }
+            else {
+                console.log("API FAILED TO GET PAIRS BY NAME SEARCH")
+            }
+        }
+        asyncLoadMatchingPlaylists(match);
+    }
+
+    // gets OWN playlists based on name
+    store.getOwnMatchingPlaylists = function (match) {
+        console.log("hya")
+        async function asyncLoadOwnMatchingPlaylists(match) {
+            console.log("hya2" + match);
+            console.log(match);
+            const response = await api.getOwnMatchingPlaylists(match);
+            if (response.data.success) {
+                console.log("hya3")
+                console.log(response.data.idNamePairs);
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                })
+            }
+            else {
+                console.log("API FAILED TO GET PAIRS BY NAME SEARCH")
+            }
+        }
+        asyncLoadOwnMatchingPlaylists(match);
     }
 
     // gets all public playlists

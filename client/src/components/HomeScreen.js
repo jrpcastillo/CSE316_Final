@@ -92,7 +92,18 @@ const HomeScreen = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(text);
-        store.getOtherPlaylists(text);
+        if (text === "") {
+            store.clearIdNamePairs();
+        }
+        else if (viewMode == 0) {
+            store.getOwnMatchingPlaylists(text);
+        }
+        else if (viewMode == 1) {
+            store.getMatchingPlaylists(text);
+        }
+        else {
+            store.getOtherPlaylists(text);
+        }
     }
 
     // keybinds for undo/redo if needed

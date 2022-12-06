@@ -135,17 +135,6 @@ getPlaylistPairs = async (req, res) => {
                 }
                 else {
                     console.log("Send the Playlist pairs");
-                    // PUT ALL THE LISTS INTO ID, NAME PAIRS
-                    // let pairs = [];
-                    // for (let key in playlists) {
-                    //     let list = playlists[key];
-                    //     let pair = {
-                    //         _id: list._id,
-                    //         name: list.name
-                    //     };
-                    //     pairs.push(pair);
-                    // }
-                    // return res.status(200).json({ success: true, idNamePairs: pairs })
                     return res.status(200).json({ success: true, idNamePairs: playlists })
                 }
             }).catch(err => console.log(err))
@@ -193,15 +182,14 @@ getPlaylists = async (req, res) => {
 getOtherPlaylists = async (req, res) => {
     console.log(req.params.username);
 
-    async function asyncFindOtherList(req){
+    async function asyncFindOtherList(req) {
         console.log("Finding lists that is published by usernames containing " + req);
-        let text = "wo"
         let regex = new RegExp(req.params.username, "i");
         console.log(regex);
         await Playlist.find( {
                                 $and: [
                                     { ownerUser: { $regex: regex } },
-                                    { publishDate: { $ne: Date.parse(0) } }
+                                    { publishDate: { $gt: dateRef } }
                                 ]
                              },
                              { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, publishDate: 1, createdAt: 1, updatedAt: 1 },
@@ -224,9 +212,81 @@ getOtherPlaylists = async (req, res) => {
     }
     asyncFindOtherList(req);
 }
+getMatchingPlaylists = async (req, res) => {
+    console.log(req.params.name);
+
+    async function asyncFindMatchingList(req) {
+        console.log("Finding lists with names containing " + req);
+
+        let regex = new RegExp(req.params.name, "i");
+        console.log(regex);
+        await Playlist.find( {
+                                $and: [
+                                    { name: { $regex: regex } },
+                                    { publishDate: { $gt: dateRef } }
+                                ]
+                             },
+                             { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, publishDate: 1, createdAt: 1, updatedAt: 1 },
+                             (err, playlists) => {
+            console.log("Found:  " + JSON.stringify(playlists));
+            if (err) {
+                return res.status(400).json({ success: false, error: err})
+            }
+            if (!playlists) {
+                console.log("!playlists.length");
+                return res
+                    .status(404)
+                    .json({ success: false, error: 'No playlists found :c' })
+            }
+            else {
+                console.log("Sending found public playlists matching name regex...");
+                return res.status(200).json({ success: true, idNamePairs: playlists })
+            }
+        })
+    }
+    asyncFindMatchingList(req);
+}
+getOwnMatchingPlaylists = async (req, res) => {
+    console.log(req.params.name);
+
+    console.log("getOwnMatchingPlaylistPairs");
+    await User.findOne({ _id: req.userId }, (err, user) => {
+        console.log("find user with id " + req.userId);
+        async function asyncFindOwnMatchingList(user) {
+            console.log("find all Playlists owned by " + user.username + " matching the string " + req.params.name);
+            let regex = new RegExp(req.params.name, "i");
+            console.log(regex);
+            await Playlist.find( {
+                                    $and: [
+                                        { ownerUser: user.username },
+                                        { name: { $regex: regex } }
+                                    ]
+                                },
+                                { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, publishDate: 1, createdAt: 1, updatedAt: 1 },
+                                (err, playlists) => {
+                console.log("found Playlists: " + JSON.stringify(playlists));
+                if (err) {
+                    return res.status(400).json({ success: false, error: err })
+                }
+                if (!playlists) {
+                    console.log("!playlists.length");
+                    return res
+                        .status(404)
+                        .json({ success: false, error: 'Playlists not found' })
+                }
+                else {
+                    console.log("Send the Playlist pairs");
+                    return res.status(200).json({ success: true, idNamePairs: playlists })
+                }
+            }).catch(err => console.log(err))
+        }
+        asyncFindOwnMatchingList(user);
+    }).catch(err => console.log(err))
+}
 getPublicPlaylists = async (req, res) => {
     console.log("Getting all published playlists...");
-    await Playlist.find({ publishDate: { $ne: Date.parse(0) } },
+    let dateRef = new Date(0);
+    await Playlist.find({ publishDate: { $gt: dateRef } },
                         { name: 1, ownerUser: 1, likes: 1, dislikes: 1, listens: 1, publishDate: 1, createdAt: 1, updatedAt: 1 },
                         (err, playlists)=> {
         console.log("Found: " + JSON.stringify(playlists));
@@ -312,5 +372,7 @@ module.exports = {
     getPlaylists,
     updatePlaylist,
     getOtherPlaylists,
-    getPublicPlaylists
+    getPublicPlaylists,
+    getMatchingPlaylists,
+    getOwnMatchingPlaylists
 }
