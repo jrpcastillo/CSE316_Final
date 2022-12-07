@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
-    const { isSong, song, index } = props;
+    const { isSong, song, index, isPublished } = props;
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
@@ -67,7 +67,7 @@ function SongCard(props) {
                                 <Button disabled={store.listNameActive} variant='contained' onClick={handleAddSong}>+</Button>
                             </Box>
                         </ListItem>
-    if (isSong) {
+    if (isSong && !isPublished) {
         cardElement = <ListItem
                         sx={{ marginTop: '15px', display: 'flex', p: 1, border: 1 , borderColor: 'primary'}}
                         style={{ width: '100%', fontSize: '18pt'}}
@@ -84,7 +84,7 @@ function SongCard(props) {
                         onClick={(event) => {
                             handleClick(event)
                         }}
-                    >
+                        >
                         <Typography fontSize={18}>
                             {index + 1}.
                         </Typography>
@@ -108,6 +108,29 @@ function SongCard(props) {
                             </IconButton>
                         </Box>
                     </ListItem>
+    }
+    else if (isSong && isPublished) {
+        cardElement = <ListItem
+                        sx={{ marginTop: '15px', display: 'flex', p: 1, border: 0 , borderColor: 'primary'}}
+                        style={{ width: '100%', fontSize: '18pt'}}
+                        id={'song-' + index + '-card'}
+                        key={index}
+                        >
+                            <Typography fontSize={18}>
+                                {index + 1}.
+                            </Typography>
+                            <Box sx={{ p: 1, flexGrow: 1 }}>
+                                <Typography fontSize={18}>
+                                    <Link id={'song-' + index + '-link'}
+                                        className="song-link"
+                                        href={"https://www.youtube.com/watch?v=" + song.youTubeId}
+                                        target="_blank"
+                                    >
+                                        {song.title} by {song.artist}
+                                    </Link>
+                                </Typography>
+                            </Box>
+                        </ListItem>
     }
     return cardElement;
 }

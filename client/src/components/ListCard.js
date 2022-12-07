@@ -132,6 +132,16 @@ function ListCard(props) {
         store.decrementListStats(idNamePair._id, -1);
     }
 
+    const handleDuplicate = (e) => {
+        e.stopPropagation();
+        store.duplicateList(idNamePair._id, idNamePair.name);
+    }
+
+    const handlePublish = (e) => {
+        e.stopPropagation();
+        store.publishList(idNamePair._id);
+    }
+
     // renders the appropriate buttons. defaulted to guest (disabled) then checking if liked/disliked
     let likeState = <IconButton
                         size="large"
@@ -155,7 +165,7 @@ function ListCard(props) {
                                 { idNamePair.dislikes }
                             </Typography>
                         </Box>;
-    let showListens = idNamePair.listens;
+    let showListens = "Listens: " + idNamePair.listens;
     if (auth.loggedIn) {
         if (!(Date.parse(idNamePair.publishDate) > Date.parse(dateRef))) {
             likeState = "";
@@ -215,6 +225,16 @@ function ListCard(props) {
         store.shrinkList();
     }
 
+    // button show:
+    let deleteShown = "";
+    let duplicateShown = <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDuplicate}>Duplicate</Button>;
+    if (store.viewMode == 0) {
+        deleteShown = <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Delete</Button>;
+    }
+    else if (true) { // make stuff to handle guest
+
+    }
+
     // handles expandState
     let expandState = <IconButton
                         size="large"
@@ -236,12 +256,14 @@ function ListCard(props) {
                                 <ExpandLessIcon />
                             </IconButton>
             if ((Date.parse(idNamePair.publishDate) > Date.parse(dateRef))) {
-                songList = <Grid container>
+                songList = <Grid container justifyContent='flex-start' alignItems='center'>
                                 <Grid item xs={12}>
-                                    <List sx={{ maxWidth: '100%', alignItems: 'center', pl: 1, pr: 1}}>
+                                    <List sx={{ maxWidth: '100%', alignItems: 'center', pt: 0, pb: 0,pl: 1, pr: 1, bgcolor: 'background.paper'}}>
                                     {
                                     store.expandedList.songs.map((song, index) => (
                                         <SongCard
+                                            isSong={true}
+                                            isPublished={true}
                                             id={'playlist-song-' + (index)}
                                             key={'playlist-song-' + (index)}
                                             index={index}
@@ -252,12 +274,12 @@ function ListCard(props) {
                                     </List>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Grid container justifyContent='flex-end'>
+                                    <Grid container justifyContent='flex-end' spacing={1}>
                                         <Grid item>
-                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Delete</Button>
+                                            { deleteShown }
                                         </Grid>
                                         <Grid item>
-                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Duplicate</Button>
+                                            { duplicateShown }
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -266,11 +288,12 @@ function ListCard(props) {
             else { // not published so  it means own, and able to edit
                 songList = <Grid container>
                                 <Grid item xs={12}>
-                                    <List sx={{ maxWidth: '100%', alignItems: 'center', pl: 1, pr: 1}}>
+                                    <List sx={{ maxWidth: '100%', alignItems: 'center', pl: 1, pr: 1 }}>
                                     {
                                         store.expandedList.songs.map((song, index) => (
                                             <SongCard
                                                 isSong={true}
+                                                isPublished={false}
                                                 id={'playlist-song-' + (index)}
                                                 key={'playlist-song-' + (index)}
                                                 index={index}
@@ -294,13 +317,13 @@ function ListCard(props) {
                                 <Grid item xs={7}>
                                     <Grid container justifyContent='flex-end' spacing={1}>
                                         <Grid item>
-                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Publish</Button>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handlePublish}>Publish</Button>
                                         </Grid>
                                         <Grid item>
                                             <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Delete</Button>
                                         </Grid>
                                         <Grid item>
-                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Duplicate</Button>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDuplicate}>Duplicate</Button>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -335,12 +358,13 @@ function ListCard(props) {
     }
     // shows the song list
     let borderWeight = (store.currentList != null && store.currentList._id == idNamePair._id) ? 5 : 1;
+    let isPublished = (!(Date.parse(idNamePair.publishDate) > Date.parse(dateRef))) ? 'background.paper' : "#ffe8b3";
     // foolproof for renaming
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ display: 'flex', border: borderWeight , borderColor: 'primary', mb: 1, bgcolor: 'background.paper' }}
+            sx={{ display: 'flex', border: borderWeight , borderColor: 'primary', mb: 1, bgcolor: isPublished }}
             style={{ width: '100%', fontSize: '24pt' }}
             button
             onClick={(event) => { handleClick(event, idNamePair._id)}}
@@ -353,8 +377,8 @@ function ListCard(props) {
                                 <Grid item xs={12}>
                                     { listName }
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
+                                    <Box>
                                         <Typography sx={{ fontSize: 12 }}>
                                             { "By: " + idNamePair.ownerUser }
                                         </Typography>
@@ -363,17 +387,17 @@ function ListCard(props) {
                             </Grid>
                         </Grid>
                         <Grid item xs={4.8}>
-                            <Grid container>
-                                <Grid item xs={3}>
+                            <Grid container justifyContent='flex-end'>
+                                <Grid item container justifyContent='flex-end' alignItems='flex-start' xs={3}>
                                     { likeState }
                                 </Grid>
-                                <Grid item xs={3}>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={2}>
                                     { showLikes }
                                 </Grid>
-                                <Grid item xs={3}>
+                                <Grid item container justifyContent='flex-end' alignItems='flex-start' xs={3}>
                                     { dislikeState }
                                 </Grid>
-                                <Grid item xs={3}>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={2}>
                                     { showDislikes }
                                 </Grid>
                             </Grid>
@@ -385,7 +409,7 @@ function ListCard(props) {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container>
-                        <Grid item xs={6}>
+                        <Grid item container justifyContent='flex-start' alignItems='flex-end' xs={6}>
                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Typography sx={{ fontSize: 12 }}>
                                     { date }
@@ -393,15 +417,15 @@ function ListCard(props) {
                             </Box>
                         </Grid>
                         <Grid item xs={6}>
-                            <Grid container>
-                                <Grid item xs={6}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Grid container justifyContent='flex-end'>
+                                <Grid item container justifyContent='flex-end' alignItems='flex-end' xs={6}>
+                                    <Box sx={{ display: 'flex' }}>
                                         <Typography sx={{ fontSize: 12 }}>
                                             { showListens }
                                         </Typography>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item container justifyContent='flex-end' alignItems='flex-end' xs={6}>
                                     { expandState }
                                 </Grid>
                             </Grid>

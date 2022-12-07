@@ -388,10 +388,10 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let counter = 0;
-        let newListName = "Untitled (" + counter + ")";
+        let newListName = "Untitled(" + counter + ")";
         while (store.idNamePairs.filter(pl => pl.name === newListName).length > 0) {
             counter += 1;
-            newListName = "Untitled (" + counter + ")";
+            newListName = "Untitled(" + counter + ")";
         }
         console.log(auth.user);
         const response = await api.createPlaylist(newListName, auth.user.username, auth.user.email);
@@ -405,6 +405,43 @@ function GlobalStoreContextProvider(props) {
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
+        }
+    }
+
+    store.duplicateList = async function (id, name) {
+        let counter = 0;
+        let newListName = name + "(" + counter + ")";
+        while (store.idNamePairs.filter(pl => pl.name === newListName).length > 0) {
+            counter += 1;
+            newListName = name + "(" + counter + ")";
+        }
+        let response = await api.createPlaylist(newListName, auth.user.username, auth.user.email);
+        if (response.status === 201) {
+            let createdList = response.data.playlist;
+            response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                response.data.playlist.publishDate = new Date(0);
+                response.data.playlist.name = newListName;
+                response = await api.updatePlaylistById(createdList._id, response.data.playlist);
+                if (response.data.success) {
+                    store.loadOption();
+                }
+            }
+        }
+        else {
+            console.log("API FAILED TO DUPLICATE A LIST");
+        }
+    }
+
+    store.publishList = async function (id) {
+        let response = await api.getPlaylistById(id);
+        if (response.data.success) {
+            let playlist = response.data.playlist;
+            playlist.publishDate = new Date();
+            response = await api.updatePlaylistById(id, playlist);
+            if (response.data.success) {
+                store.loadOption();
+            }
         }
     }
 
