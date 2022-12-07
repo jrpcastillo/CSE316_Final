@@ -659,13 +659,13 @@ function GlobalStoreContextProvider(props) {
         async function asyncSetCurrentList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
-                let playlist = response.data.playlist;
-                response = await api.updatePlaylistById(playlist._id, playlist);
+                console.log("grabbed")
+                let playlist = response.data.playlist
+                response = await api.updateListens(id, playlist);
                 if (response.data.success) {
-                    storeReducer({
-                        type: GlobalStoreActionType.SET_CURRENT_LIST,
-                        payload: playlist
-                    });
+                    console.log("done")
+                    store.currentList = response.data.playlist;
+                    store.loadOption();
                 }
             }
         }

@@ -369,6 +369,28 @@ updateListStats = async (req, res) => {
         })
     })
 }
+updateListens = async (req, res) => {
+    console.log("Updating listens...")
+    Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
+        console.log("Found target playlist: " + playlist.name);
+        
+        playlist.listens += 1
+        playlist
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    playlist: playlist
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: 'Playlist stats not updated!'
+                })
+            })
+    })
+}
 updatePlaylist = async (req, res) => {
     const body = req.body
     console.log("updatePlaylist: " + JSON.stringify(body));
@@ -441,5 +463,6 @@ module.exports = {
     getPublicPlaylists,
     getMatchingPlaylists,
     getOwnMatchingPlaylists,
-    updateListStats
+    updateListStats,
+    updateListens
 }

@@ -76,14 +76,20 @@ const HomeScreen = () => {
     }
 
     const handleViewOwnLists = () => {
+        setText("");
+        store.currentList = null;
         store.loadIdNamePairs();
     }
 
     const handleViewAllLists = () => {
+        setText("");
+        store.currentList = null;
         store.getPublicPlaylists();
     }
 
     const handleViewUserLists = () => {
+        setText("");
+        store.currentList = null;
         store.clearIdNamePairs();
     }
 
@@ -91,15 +97,19 @@ const HomeScreen = () => {
         event.preventDefault();
         console.log(text);
         if (text === "") {
+            store.currentList = null;
             store.clearIdNamePairs();
         }
         else if (store.viewMode == 0) {
+            store.currentList = null;
             store.getOwnMatchingPlaylists(text);
         }
         else if (store.viewMode == 1) {
+            store.currentList = null;
             store.getMatchingPlaylists(text);
         }
         else {
+            store.currentList = null;
             store.getOtherPlaylists(text);
         }
     }
@@ -271,6 +281,7 @@ const HomeScreen = () => {
                         <InputBase
                             sx={{ ml: 1, width: '95%', overflowX: 'hidden' }}
                             placeholder="Search"
+                            value={text}
                             inputProps={{ 'aria-label': 'search playlists'}}
                             onChange={e => setText(e.target.value)}
                         />  

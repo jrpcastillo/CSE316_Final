@@ -16,6 +16,7 @@ import Fab from '@mui/material/Fab'
 */
 function Statusbar() {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     store.history = useHistory();
 
     const style = {
@@ -30,13 +31,12 @@ function Statusbar() {
         store.createNewList();
     }
     
-    if (window.location.pathname == "/login/" || window.location.pathname == "/register/")
+    if (!auth.loggedIn)
         return <Box sx={{height: '12%', color: 'black'}}></Box>;
     let cardStatus = false;
     if (store.listNameActive) {
         cardStatus = true;
     }
-
 
     if (store.viewMode == 0) {
         return (

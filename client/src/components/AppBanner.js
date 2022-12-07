@@ -94,6 +94,9 @@ export default function AppBanner() {
 
     let editToolbar = "";
     let menu = loggedOutMenu;
+    if (auth.loggedIn) {
+        menu = loggedInMenu;
+    }
     console.log("auth in appbanner")
     console.log(auth);
     

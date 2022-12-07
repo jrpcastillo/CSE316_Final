@@ -57,6 +57,11 @@ export const updateListStats = (id, arr) => {
         arr: arr
     })
 }
+export const updateListens = (id, playlist) => {
+    return api.put(`/updatelistens/${id}`, {
+        playlist: playlist
+    })
+}
 
 const apis = {
     createPlaylist,
@@ -69,7 +74,8 @@ const apis = {
     getPublicPlaylists,
     getMatchingPlaylists,
     getOwnMatchingPlaylists,
-    updateListStats
+    updateListStats,
+    updateListens
 }
 
 export default apis

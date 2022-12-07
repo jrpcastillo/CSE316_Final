@@ -41,7 +41,9 @@ function ListCard(props) {
         // DOUBLE CLICK IS FOR SONG EDITING
         if (event.detail === 2) {
             event.stopPropagation();
-            handleToggleEdit(event);
+            if (Date.parse(idNamePair.publishDate) == Date.parse(dateRef)) {
+                handleToggleEdit(event);
+            }
         }
         if (event.detail === 1) {
             event.stopPropagation();
