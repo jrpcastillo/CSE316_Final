@@ -48,47 +48,59 @@ const HomeScreen = () => {
     // Sorting options for Viewing User's Own Lists
     const handleSortName = () => {
         setAnchorEl(null);
+        store.sortByName(store.idNamePairs);
         // sorting method for name
     }
     const handleSortCreationDate = () => {
         setAnchorEl(null);
+        store.sortByCreationDate(store.idNamePairs);
         // sorting method for creation date
     }
     const handleSortEditDate = () => {
         setAnchorEl(null);
+        store.sortByEditDate(store.idNamePairs);
         // sorting method for last edit date
     }
 
     const handleSortPublishDate = () => {
         setAnchorEl(null);
+        store.sortByPublishDate(store.idNamePairs);
     }
 
     const handleSortListens = () => {
         setAnchorEl(null);
+        store.sortByListens(store.idNamePairs);
     }
 
     const handleSortLikes = () => {
         setAnchorEl(null);
+        store.sortByLikes(store.idNamePairs);
     }
 
     const handleSortDislikes = () => {
         setAnchorEl(null);
+        store.sortByDislikes(store.idNamePairs);
     }
+
+    // looks at current sort option:
 
     const handleViewOwnLists = () => {
         setText("");
+        store.searchBy = null;
         store.currentList = null;
         store.loadIdNamePairs();
     }
 
     const handleViewAllLists = () => {
         setText("");
+        store.searchBy = null;
         store.currentList = null;
         store.getPublicPlaylists();
     }
 
     const handleViewUserLists = () => {
         setText("");
+        store.searchBy = null;
         store.currentList = null;
         store.clearIdNamePairs();
     }
@@ -190,32 +202,12 @@ const HomeScreen = () => {
                     <MenuItem onClick={handleSortName}>By Name (A-Z)</MenuItem>
                     <MenuItem onClick={handleSortCreationDate}>By Creation Date (Old-New)</MenuItem>
                     <MenuItem onClick={handleSortEditDate}>By Last Edit Date (New-Old)</MenuItem>
+                    <MenuItem onClick={handleSortPublishDate}>By Publish Date (Newest)</MenuItem>
+                    <MenuItem onClick={handleSortListens}>By Listens (High-Low)</MenuItem>
+                    <MenuItem onClick={handleSortLikes}>By Likes (High-Low)</MenuItem>
+                    <MenuItem onClick={handleSortDislikes}>By Dislikes (High-Low)</MenuItem>
                 </Menu>
-    if (store.viewMode != 0) {
-        menu = <Menu
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    open={isMenuOpen}
-                    disabled={store.listNameActive}
-                    onClose={handleSortMenuClose}
-                    disableScrollLock={true}
-                >
-                    <MenuItem onClick={handleSortName}>By Name (A-Z)</MenuItem>
-                    <MenuItem onClick={handleSortPublishDate}>Publish Date (Newest)</MenuItem>
-                    <MenuItem onClick={handleSortListens}>Listens (High-Low)</MenuItem>
-                    <MenuItem onClick={handleSortLikes}>Likes (High-Low)</MenuItem>
-                    <MenuItem onClick={handleSortDislikes}>Dislikes (High-Low)</MenuItem>
-                </Menu>;
-    }
-    
+
     return (
         // <Box sx={{...style}}>
         //     <Box sx={{
