@@ -97,6 +97,10 @@ export default function AppBanner() {
     if (auth.loggedIn) {
         menu = loggedInMenu;
     }
+    else {
+        if (store.history.location.pathname == "/")
+            return "";
+    }
     console.log("auth in appbanner")
     console.log(auth);
     
@@ -154,7 +158,6 @@ export default function AppBanner() {
                             aria-haspopup="true"
                             disabled={cardStatus}
                             onClick={handleProfileMenuOpen}
-                            
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>

@@ -440,27 +440,33 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.duplicateList = async function (id, name) {
-        let counter = 0;
-        let newListName = name + "(" + counter + ")";
-        while (store.idNamePairs.filter(pl => pl.name === newListName).length > 0) {
-            counter += 1;
-            newListName = name + "(" + counter + ")";
-        }
-        let response = await api.createPlaylist(newListName, auth.user.username, auth.user.email);
-        if (response.status === 201) {
-            let createdList = response.data.playlist;
-            response = await api.getPlaylistById(id);
-            if (response.data.success) {
-                response.data.playlist.publishDate = new Date(0);
-                response.data.playlist.name = newListName;
-                response = await api.updatePlaylistById(createdList._id, response.data.playlist);
-                if (response.data.success) {
-                    store.loadOption();
+        let response = await api.getPlaylistPairs();
+        if (response.data.success) {
+            let newListName = name;
+            if (response.data.idNamePairs.filter(pl => pl.name === name).length > 0) {
+                let counter = 0;
+                newListName = name + "(" + counter + ")";
+                while (response.data.idNamePairs.filter(pl => pl.name === newListName).length > 0) {
+                    counter += 1;
+                    newListName = name + "(" + counter + ")";
                 }
             }
-        }
-        else {
-            console.log("API FAILED TO DUPLICATE A LIST");
+            response = await api.createPlaylist(newListName, auth.user.username, auth.user.email);
+            if (response.status === 201) {
+                let createdList = response.data.playlist;
+                response = await api.getPlaylistById(id);
+                if (response.data.success) {
+                    response.data.playlist.publishDate = new Date(0);
+                    response.data.playlist.name = newListName;
+                    response = await api.updatePlaylistById(createdList._id, response.data.playlist);
+                    if (response.data.success) {
+                        store.loadOption();
+                    }
+                }
+            }
+            else {
+                console.log("API FAILED TO DUPLICATE A LIST");
+            }
         }
     }
 
@@ -696,7 +702,7 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 console.log("grabbed")
                 let playlist = response.data.playlist
-                if ((Date.parse(playlist.publishDate) > Date.parse(new Date(0)))) {
+                if (store.currentList == null || (playlist._id != store.currentList._id && (Date.parse(playlist.publishDate) > Date.parse(new Date(0))))) {
                     response = await api.updateListens(id, playlist);
                     if (response.data.success) {
                         console.log("done, listened")

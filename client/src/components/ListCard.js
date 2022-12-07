@@ -168,7 +168,7 @@ function ListCard(props) {
                             </Typography>
                         </Box>;
     let showListens = "Listens: " + idNamePair.listens;
-    if (auth.loggedIn) {
+    if (auth.loggedIn && auth.user != null) {
         if (!(Date.parse(idNamePair.publishDate) > Date.parse(dateRef))) {
             likeState = "";
             showLikes = "";

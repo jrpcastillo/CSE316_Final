@@ -159,6 +159,13 @@ function AuthContextProvider(props) {
         return initials;
     }
 
+    auth.loginGuest = function() {
+        authReducer({
+            type: AuthActionType.LOGIN_USER,
+            payload: { user: null, loggedIn: true }
+        })
+    }
+
     return (
         <AuthContext.Provider value={{
             auth

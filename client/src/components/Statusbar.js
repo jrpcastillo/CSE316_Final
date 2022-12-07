@@ -30,9 +30,11 @@ function Statusbar() {
     function handleCreateNewList() {
         store.createNewList();
     }
+
+    if (!auth.loggedIn) {
+        return "";
+    }
     
-    if (!auth.loggedIn)
-        return <Box sx={{height: '12%', color: 'black'}}></Box>;
     let cardStatus = false;
     if (store.listNameActive) {
         cardStatus = true;
@@ -54,6 +56,8 @@ function Statusbar() {
             </Box>
         )
     }
+
+
 
     return (
         <Box sx={{...style}}>

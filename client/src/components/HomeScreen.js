@@ -132,7 +132,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         console.log("passed useEffect")
-        if (auth.loggedIn) {
+        if (auth.loggedIn && auth.user != null) {
             store.loadIdNamePairs();
         } else {
             store.getPublicPlaylists();
@@ -238,7 +238,7 @@ const HomeScreen = () => {
                         <Grid item sx={{ ml: 1 }}>
                             <IconButton
                                 id='home-view'
-                                disabled={store.listNameActive}
+                                disabled={store.listNameActive || auth.user == null}
                                 onClick={handleViewOwnLists}
                                 sx={(store.viewMode == 0) ? { border: 2, borderColor: 'primary' } : {}}
                             >
