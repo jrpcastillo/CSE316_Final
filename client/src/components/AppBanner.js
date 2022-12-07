@@ -96,12 +96,6 @@ export default function AppBanner() {
     let menu = loggedOutMenu;
     console.log("auth in appbanner")
     console.log(auth);
-    if (auth.loggedIn) {
-        menu = loggedInMenu;
-        if (store.currentList) {
-            editToolbar = <EditToolbar />;
-        }
-    }
     
     function getAccountMenu(loggedIn) {
         let userInitials = auth.getUserInitials();

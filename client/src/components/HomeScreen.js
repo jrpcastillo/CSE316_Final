@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
+import MUIEditSongModal from './MUIEditSongModal'
+import MUIRemoveSongModal from './MUIRemoveSongModal'
 
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
@@ -141,9 +143,15 @@ const HomeScreen = () => {
     }
 
     // Checking for Modals
-    let modalJSX = "";
-    if (store.listMarkedForDeletion) {
+    let modalJSX;
+    if (store.currentModal == "NONE") {
+        modalJSX = "";
+    } else if (store.currentModal == "DELETE_LIST") {
         modalJSX = <MUIDeleteModal />;
+    } else if (store.currentModal == "EDIT_SONG") {
+        modalJSX = <MUIEditSongModal />;
+    } else if (store.currentModal == "REMOVE_SONG") {
+        modalJSX = <MUIRemoveSongModal />;
     }
 
     // Using the proper account circle
@@ -165,6 +173,7 @@ const HomeScreen = () => {
                         horizontal: 'right',
                     }}
                     open={isMenuOpen}
+                    disabled={store.listNameActive}
                     onClose={handleSortMenuClose}
                     disableScrollLock={true}
                 >
@@ -185,6 +194,7 @@ const HomeScreen = () => {
                         horizontal: 'right',
                     }}
                     open={isMenuOpen}
+                    disabled={store.listNameActive}
                     onClose={handleSortMenuClose}
                     disableScrollLock={true}
                 >
@@ -195,16 +205,7 @@ const HomeScreen = () => {
                     <MenuItem onClick={handleSortDislikes}>Dislikes (High-Low)</MenuItem>
                 </Menu>;
     }
-
-    // checks if other buttons should be disabled during foolproof
-    const foolProofStatus = false;
-
-    // searchbar
-    useFormControl(()=> {
-
-    })
     
-
     return (
         // <Box sx={{...style}}>
         //     <Box sx={{
@@ -235,7 +236,7 @@ const HomeScreen = () => {
                         <Grid item sx={{ ml: 1 }}>
                             <IconButton
                                 id='home-view'
-                                disabled={foolProofStatus}
+                                disabled={store.listNameActive}
                                 onClick={handleViewOwnLists}
                                 sx={(store.viewMode == 0) ? { border: 2, borderColor: 'primary' } : {}}
                             >
@@ -245,7 +246,7 @@ const HomeScreen = () => {
                         <Grid item>
                             <IconButton
                                 id='all-view'
-                                disabled={foolProofStatus}
+                                disabled={store.listNameActive}
                                 onClick={handleViewAllLists}
                                 sx={(store.viewMode == 1) ? { border: 2, borderColor: 'primary' } : {}}
                             >
@@ -255,7 +256,7 @@ const HomeScreen = () => {
                         <Grid item>
                             <IconButton
                                 id='user-view'
-                                disabled={foolProofStatus}
+                                disabled={store.listNameActive}
                                 onClick={handleViewUserLists}
                                 sx={(store.viewMode == 2) ? { border: 2, borderColor: 'primary' } : {}}
                             >
@@ -290,7 +291,7 @@ const HomeScreen = () => {
                                 aria-label="Sort Own Playlists"
                                 aria-controls={menuId}
                                 aria-haspopup="true"
-                                disabled={foolProofStatus}
+                                disabled={store.listNameActive}
                                 onClick={handleSortMenuOpen}
                             >
                                 <SortIcon />
@@ -301,7 +302,7 @@ const HomeScreen = () => {
             </Grid>
             { menu }
             <Grid container sx={{ height: '93%' }}>
-                <Grid item xs={7.2} sx={{ overflowY: 'auto', height: '100%'}}>
+                <Grid item xs={7} sx={{ overflowY: 'auto', height: '100%'}}>
                     <Grid container>
                         {/* <Grid item xs={12}>
                             listCard
@@ -309,12 +310,13 @@ const HomeScreen = () => {
                         { listCard }
                     </Grid>
                 </Grid>
-                <Grid item xs={4.8}>
+                <Grid item xs={5}>
                     <Grid container sx={{ height: '100%'}}>
                         test
                     </Grid>
                 </Grid>
             </Grid>
+            { modalJSX }
         </Box>
         /*
         <div id="playlist-selector">

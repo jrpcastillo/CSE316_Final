@@ -189,6 +189,7 @@ getOtherPlaylists = async (req, res) => {
         console.log("Finding lists that is published by usernames containing " + req);
         let regex = new RegExp(req.params.username, "i");
         console.log(regex);
+        let dateRef = new Date(0);
         await Playlist.find( {
                                 $and: [
                                     { ownerUser: { $regex: regex } },
@@ -223,6 +224,7 @@ getMatchingPlaylists = async (req, res) => {
 
         let regex = new RegExp(req.params.name, "i");
         console.log(regex);
+        let dateRef = new Date(0);
         await Playlist.find( {
                                 $and: [
                                     { name: { $regex: regex } },

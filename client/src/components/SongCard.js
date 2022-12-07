@@ -6,11 +6,13 @@ import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
-    const { song, index } = props;
+    const { isSong, song, index } = props;
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
@@ -46,48 +48,68 @@ function SongCard(props) {
     function handleClick(event) {
         // DOUBLE CLICK IS FOR SONG EDITING
         if (event.detail === 2) {
+            event.stopPropagation();
             store.showEditSongModal(index, song);
         }
     }
+    function handleAddSong(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        store.addNewSong();
+    }
 
-    let cardClass = "list-card";
-    return (
-        <ListItem
-            sx={{ marginTop: '15px', display: 'flex', p: 1, border: 1 , borderColor: 'primary'}}
-            style={{ width: '100%', fontSize: '18pt'}}
-            id={'song-' + index + '-card'}
-            key={index}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            draggable="true"
-            button
-            onClick={(event) => {
-                handleClick(event)
-            }}
-        >
-            {index + 1}.
-            <Box sx={{ p: 1, flexGrow: 1 }}>
-                <Link id={'song-' + index + '-link'}
-                    className="song-link"
-                    href={"https://www.youtube.com/watch?v=" + song.youTubeId}
-                    target="_blank"
-                >
-                    {song.title} by {song.artist}
-                </Link>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleRemoveSong(event)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'18pt'}} />
-                </IconButton>
-            </Box>
-        </ListItem>
-        
-    );
+    let cardElement = <ListItem
+                        sx={{ marginTop: '15px', display: 'flex', p: 1, border: 1 , borderColor: 'primary', justifyContent: 'center' }}
+                        style={{ width: '100%', fontSize: '18pt'}}
+                        button
+                        >
+                            <Box style={{ justifyContent: 'center', display: 'flex' }}>
+                                <Button disabled={store.listNameActive} variant='contained' onClick={handleAddSong}>+</Button>
+                            </Box>
+                        </ListItem>
+    if (isSong) {
+        cardElement = <ListItem
+                        sx={{ marginTop: '15px', display: 'flex', p: 1, border: 1 , borderColor: 'primary'}}
+                        style={{ width: '100%', fontSize: '18pt'}}
+                        id={'song-' + index + '-card'}
+                        key={index}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        onDragEnter={handleDragEnter}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        draggable="true"
+                        button
+                        disabled={store.listNameActive}
+                        onClick={(event) => {
+                            handleClick(event)
+                        }}
+                    >
+                        <Typography fontSize={18}>
+                            {index + 1}.
+                        </Typography>
+                        <Box sx={{ p: 1, flexGrow: 1 }}>
+                            <Typography fontSize={18}>
+                                <Link id={'song-' + index + '-link'}
+                                    className="song-link"
+                                    href={"https://www.youtube.com/watch?v=" + song.youTubeId}
+                                    target="_blank"
+                                >
+                                    
+                                        {song.title} by {song.artist}
+                                </Link>
+                            </Typography>
+                        </Box>
+                        <Box sx={{ p: 1 }}>
+                            <IconButton disabled={store.listNameActive} onClick={(event) => {
+                                    handleRemoveSong(event)
+                                }} aria-label='delete'>
+                                <DeleteIcon style={{fontSize:'18pt'}} />
+                            </IconButton>
+                        </Box>
+                    </ListItem>
+    }
+    return cardElement;
 }
 
 /*

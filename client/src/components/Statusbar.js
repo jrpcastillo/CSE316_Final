@@ -16,7 +16,6 @@ import Fab from '@mui/material/Fab'
 */
 function Statusbar() {
     const { store } = useContext(GlobalStoreContext);
-    const { auth } = useContext(AuthContext);
     store.history = useHistory();
 
     const style = {
@@ -30,10 +29,6 @@ function Statusbar() {
     function handleCreateNewList() {
         store.createNewList();
     }
-
-    let text ="";
-    if (store.currentList)
-        text = store.currentList.name;
     
     if (window.location.pathname == "/login/" || window.location.pathname == "/register/")
         return <Box sx={{height: '12%', color: 'black'}}></Box>;
@@ -42,34 +37,32 @@ function Statusbar() {
         cardStatus = true;
     }
 
-    else if (store.currentList == null) {
-        if (auth.loggedIn) {
-            return (
-                <Box sx={{...style}}>
-                    <Fab 
-                        color="error" 
-                        size="small"
-                        aria-label="add"
-                        id="add-list-button"
-                        disabled={cardStatus}
-                        onClick={handleCreateNewList}
-                    >
-                        <AddIcon />
-                    </Fab>
-                </Box>
-            )
-        }
+
+    if (store.viewMode == 0) {
+        return (
+            <Box sx={{...style}}>
+                <Fab 
+                    color="error" 
+                    size="small"
+                    aria-label="add"
+                    id="add-list-button"
+                    disabled={cardStatus}
+                    onClick={handleCreateNewList}
+                >
+                    <AddIcon />
+                </Fab>
+            </Box>
+        )
     }
+
     return (
-        (auth.loggedIn)
-            ? <Box sx={{...style}}>
-                    <Typography variant="h4"
-                                align="center"
-                    >
-                        {text}
-                    </Typography>
-                </Box>
-            : <Box sx={{...style}}></Box>
+        <Box sx={{...style}}>
+            <Typography variant="h4"
+                        align="center"
+            >
+                {(store.searchText != null) ? store.searchText + " Lists" : ""}
+            </Typography>
+        </Box>
     );
 }
 

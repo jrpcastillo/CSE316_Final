@@ -13,6 +13,12 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import List from '@mui/material/List';
+import SongCard from './SongCard';
+import Button from '@mui/material/Button';
+import MUIRenameErrorModal from './MUIRenameErrorModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -31,9 +37,16 @@ function ListCard(props) {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    function handleLoadList(event, id) {
-        console.log("handleLoadList for " + id);
-        if (!event.target.disabled) {
+    function handleClick(event, id) {
+        // DOUBLE CLICK IS FOR SONG EDITING
+        if (event.detail === 2) {
+            event.stopPropagation();
+            handleToggleEdit(event);
+        }
+        if (event.detail === 1) {
+            event.stopPropagation();
+            console.log("handleLoadList for " + id);
+            if (!event.target.disabled) {
             let _id = event.target.id;
             if (_id.indexOf('list-card-text-') >= 0)
                 _id = ("" + _id).substring("list-card-text-".length);
@@ -42,7 +55,17 @@ function ListCard(props) {
 
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
+            }
         }
+    }
+
+    function handleUndo(event) {
+        event.stopPropagation();
+        store.undo();
+    }
+    function handleRedo(event) {
+        event.stopPropagation();
+        store.redo();
     }
 
     function handleToggleEdit(event) {
@@ -58,14 +81,14 @@ function ListCard(props) {
         setEditActive(newActive);
     }
 
-    async function handleDeleteList(event, id) {
+    async function handleDeleteList(event) {
         event.stopPropagation();
-        let _id = event.target.id;
-        _id = ("" + _id).substring("delete-list-".length);
-        store.markListForDeletion(id);
+        store.markListForDeletion(idNamePair._id);
     }
 
     function handleKeyPress(event) {
+        if (text == idNamePair.name) {
+        }
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
             store.changeListName(id, text);
@@ -79,10 +102,6 @@ function ListCard(props) {
     let selectClass = "unselected-list-card";
     if (selected) {
         selectClass = "selected-list-card";
-    }
-    let cardStatus = false;
-    if (store.listNameActive) {
-        cardStatus = true;
     }
 
     // process date
@@ -126,59 +145,271 @@ function ListCard(props) {
                         >
                             <ThumbDownOffAltIcon />
                         </IconButton>
+    let showLikes = <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography sx={{ fontSize: 12 }}>
+                            { idNamePair.likes }
+                        </Typography>
+                    </Box>;
+    let showDislikes = <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography sx={{ fontSize: 12 }}>
+                                { idNamePair.dislikes }
+                            </Typography>
+                        </Box>;
+    let showListens = idNamePair.listens;
     if (auth.loggedIn) {
-        if (auth.user.likedPlaylists.includes(idNamePair._id)) {
-            likeState = <IconButton
-                        size="large"
-                        disabled={false}
-                        onClick={handleUnLike}
-                        >
-                            <ThumbUpIcon />
-                        </IconButton>
+        if (!(Date.parse(idNamePair.publishDate) > Date.parse(dateRef))) {
+            likeState = "";
+            showLikes = "";
+            dislikeState = "";
+            showDislikes = "";
+            showListens = "";
         }
         else {
-            likeState = <IconButton
-                        size="large"
-                        disabled={false}
-                        onClick={handleLike}
-                        >
-                            <ThumbUpOffAltIcon />
-                        </IconButton>
-        }
-
-        if (auth.user.dislikedPlaylists.includes(idNamePair._id)) {
-            dislikeState = <IconButton
+            if (auth.user.likedPlaylists.includes(idNamePair._id)) {
+                likeState = <IconButton
                             size="large"
-                            disabled={false}
-                            onClick={handleUnDislike}
+                            disabled={(store.listNameActive)}
+                            onClick={handleUnLike}
                             >
-                                <ThumbDownIcon />
+                                <ThumbUpIcon />
                             </IconButton>
-        }
-        else {
-            dislikeState = <IconButton
+            }
+            else {
+                likeState = <IconButton
                             size="large"
-                            disabled={false}
-                            onClick={handleDislike}
+                            disabled={(store.listNameActive)}
+                            onClick={handleLike}
                             >
-                                <ThumbDownOffAltIcon />
-                             </IconButton>
+                                <ThumbUpOffAltIcon />
+                            </IconButton>
+            }
+    
+            if (auth.user.dislikedPlaylists.includes(idNamePair._id)) {
+                dislikeState = <IconButton
+                                size="large"
+                                disabled={(store.listNameActive)}
+                                onClick={handleUnDislike}
+                                >
+                                    <ThumbDownIcon />
+                                </IconButton>
+            }
+            else {
+                dislikeState = <IconButton
+                                size="large"
+                                disabled={(store.listNameActive)}
+                                onClick={handleDislike}
+                                >
+                                    <ThumbDownOffAltIcon />
+                                 </IconButton>
+            }
         }
     }
 
+    const handleExpand = (e) => {
+        e.stopPropagation();
+        store.expandList(idNamePair._id);
+    }
+
+    const handleShrink = (e) => {
+        e.stopPropagation();
+        store.shrinkList();
+    }
+
+    // handles expandState
+    let expandState = <IconButton
+                        size="large"
+                        disabled={(store.listNameActive)}
+                        onClick={handleExpand}
+                        >
+                            <ExpandMoreIcon />
+                        </IconButton>
+    let canUndo = store.canUndo();
+    let canRedo = store.canRedo();
+    let songList = "";
+    if (store.expandedList != null) {
+        if (store.expandedList._id == idNamePair._id) {
+            expandState = <IconButton
+                            size="large"
+                            disabled={(store.listNameActive)}
+                            onClick={handleShrink}
+                            >
+                                <ExpandLessIcon />
+                            </IconButton>
+            if ((Date.parse(idNamePair.publishDate) > Date.parse(dateRef))) {
+                songList = <Grid container>
+                                <Grid item xs={12}>
+                                    <List sx={{ maxWidth: '100%', alignItems: 'center', pl: 1, pr: 1}}>
+                                    {
+                                    store.expandedList.songs.map((song, index) => (
+                                        <SongCard
+                                            id={'playlist-song-' + (index)}
+                                            key={'playlist-song-' + (index)}
+                                            index={index}
+                                            song={song}
+                                        />
+                                    ))
+                                    }
+                                    </List>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container justifyContent='flex-end'>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Delete</Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Duplicate</Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>;
+            }
+            else { // not published so  it means own, and able to edit
+                songList = <Grid container>
+                                <Grid item xs={12}>
+                                    <List sx={{ maxWidth: '100%', alignItems: 'center', pl: 1, pr: 1}}>
+                                    {
+                                        store.expandedList.songs.map((song, index) => (
+                                            <SongCard
+                                                isSong={true}
+                                                id={'playlist-song-' + (index)}
+                                                key={'playlist-song-' + (index)}
+                                                index={index}
+                                                song={song}
+                                            />
+                                        ))
+                                    }
+                                    <SongCard isSong={false}/>
+                                    </List>
+                                </Grid>
+                                <Grid item xs={5}>
+                                    <Grid container justifyContent='flex-start' spacing={1}>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive || !canUndo)} onClick={handleUndo}>Undo</Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive || !canRedo)} onClick={handleRedo}>Redo</Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={7}>
+                                    <Grid container justifyContent='flex-end' spacing={1}>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Publish</Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Delete</Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Duplicate</Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>;
+            }
+        }
+    }
+
+    // handles renaming
+    let listName =  <Typography sx={{ whiteSpace: 'nowrap', fontSize: 30, height: 40, mr: 1,  overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                        { idNamePair.name }
+                    </Typography>
+    if (editActive) {
+        console.log("im here but wtf")
+        listName =
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                id={"list-" + idNamePair._id}
+                label="Playlist Name"
+                name="name"
+                autoComplete="Playlist Name"
+                className='list-card'
+                onKeyPress={handleKeyPress}
+                onChange={handleUpdateText}
+                defaultValue={idNamePair.name}
+                inputProps={{style: {fontSize: 48}}}
+                InputLabelProps={{style: {fontSize: 24}}}
+                autoFocus
+            />
+    }
+    // shows the song list
+    let borderWeight = (store.currentList != null && store.currentList._id == idNamePair._id) ? 5 : 1;
+    // foolproof for renaming
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ display: 'flex', border: 1 , borderColor: 'primary', mb: 1 }}
-            style={{ width: '100%', fontSize: '24pt'}}
+            sx={{ display: 'flex', border: borderWeight , borderColor: 'primary', mb: 1, bgcolor: 'background.paper' }}
+            style={{ width: '100%', fontSize: '24pt' }}
             button
-            disabled={cardStatus}
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
+            onClick={(event) => { handleClick(event, idNamePair._id)}}
         >
             <Grid container>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <Grid item xs={7.2}>
+                            <Grid container columnSpacing={2}>
+                                <Grid item xs={12}>
+                                    { listName }
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Typography sx={{ fontSize: 12 }}>
+                                            { "By: " + idNamePair.ownerUser }
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={4.8}>
+                            <Grid container>
+                                <Grid item xs={3}>
+                                    { likeState }
+                                </Grid>
+                                <Grid item xs={3}>
+                                    { showLikes }
+                                </Grid>
+                                <Grid item xs={3}>
+                                    { dislikeState }
+                                </Grid>
+                                <Grid item xs={3}>
+                                    { showDislikes }
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    { songList }
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <Grid item xs={6}>
+                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Typography sx={{ fontSize: 12 }}>
+                                    { date }
+                                </Typography>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Typography sx={{ fontSize: 12 }}>
+                                            { showListens }
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    { expandState }
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            {/* <Grid container>
                 <Grid item xs={7.2}>
                     <Grid container columnSpacing={2}>
                         <Grid item xs={12} sx={{ height: 40, mr: 1,  overflow: 'hidden', textOverflow: 'ellipsis'}}>
@@ -234,17 +465,27 @@ function ListCard(props) {
                                 </Grid>
                             </Grid>
                         </Grid>
+                        <Grid item xs={12}>
+                            <Grid container>
+                                <Grid item xs={6}>
+
+                                </Grid>
+                                <Grid item xs={6}>
+                                    { expandState }
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </Grid> */}
             {/* <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
             <Box sx={{ p: 1 }}>
-                <IconButton disabled={cardStatus} onClick={handleToggleEdit} aria-label='edit'>
+                <IconButton disabled={(cardStatus && store.listNameActive)} onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'24pt'}} />
                 </IconButton>
             </Box>
             <Box sx={{ p: 1 }}>
-                <IconButton disabled={cardStatus}
+                <IconButton disabled={(cardStatus && store.listNameActive)}
                             onClick={(event) => {
                                 handleDeleteList(event, idNamePair._id)
                             }} aria-label='delete'
@@ -253,26 +494,6 @@ function ListCard(props) {
                 </IconButton>
             </Box> */}
         </ListItem>
-
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Playlist Name"
-                name="name"
-                autoComplete="Playlist Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />
-    }
     return (
         cardElement
     );
