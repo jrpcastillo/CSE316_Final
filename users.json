@@ -1,0 +1,119 @@
+[{
+  "_id": {
+    "$oid": "639167094bc60571c0282674"
+  },
+  "playlists": [
+    {
+      "$oid": "6391673b4bc60571c0282683"
+    },
+    {
+      "$oid": "6391674e4bc60571c02826c8"
+    }
+  ],
+  "likedPlaylists": [],
+  "dislikedPlaylists": [
+    {
+      "$oid": "6391673b4bc60571c0282683"
+    }
+  ],
+  "username": "testuser1",
+  "email": "testuser1@gmail.com",
+  "firstName": "Test",
+  "lastName": "One",
+  "passwordHash": "$2a$10$FagClMRuu3q4x/MLoAARBeUYpiG1c/OkRte75ugQwdOKtV8Bgzd06",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473481540"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473569208"
+    }
+  },
+  "__v": 3
+},{
+  "_id": {
+    "$oid": "639167184bc60571c0282678"
+  },
+  "playlists": [
+    {
+      "$oid": "639167774bc60571c028271b"
+    },
+    {
+      "$oid": "639167814bc60571c0282741"
+    }
+  ],
+  "likedPlaylists": [
+    {
+      "$oid": "639167774bc60571c028271b"
+    },
+    {
+      "$oid": "639167814bc60571c0282741"
+    }
+  ],
+  "dislikedPlaylists": [
+    {
+      "$oid": "6391673b4bc60571c0282683"
+    }
+  ],
+  "username": "testuser2@gmail.com",
+  "email": "testuser2@gmail.com",
+  "firstName": "Test",
+  "lastName": "Two",
+  "passwordHash": "$2a$10$W0.HvZQxGWpa4wYMpqObceOlBQDlNXKX67D5xD1JtfB6/kaYFLW72",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473496263"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473660422"
+    }
+  },
+  "__v": 5
+},{
+  "_id": {
+    "$oid": "6391672b4bc60571c028267c"
+  },
+  "playlists": [
+    {
+      "$oid": "639167c84bc60571c02827b7"
+    },
+    {
+      "$oid": "639167ca4bc60571c02827bf"
+    },
+    {
+      "$oid": "639167ca4bc60571c02827c7"
+    }
+  ],
+  "likedPlaylists": [
+    {
+      "$oid": "639167774bc60571c028271b"
+    },
+    {
+      "$oid": "639167814bc60571c0282741"
+    },
+    {
+      "$oid": "6391673b4bc60571c0282683"
+    }
+  ],
+  "dislikedPlaylists": [],
+  "username": "testuser3",
+  "email": "testuser3@gmail.com",
+  "firstName": "Test",
+  "lastName": "3ree",
+  "passwordHash": "$2a$10$xgtrx8r/7KNYnrNmp7px8.wVE4/cboOo0yihlQhmoKt.jrUr.HH1q",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473515891"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473698882"
+    }
+  },
+  "__v": 6
+}]

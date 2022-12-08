@@ -1,0 +1,256 @@
+[{
+  "_id": {
+    "$oid": "6391673b4bc60571c0282683"
+  },
+  "name": "Sample List",
+  "ownerUser": "testuser1",
+  "ownerEmail": "testuser1@gmail.com",
+  "listens": 2,
+  "likes": 1,
+  "dislikes": 2,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "1670473548567"
+    }
+  },
+  "comments": [],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "639167444bc60571c02826ad"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "dQw4w9WgXcQ"
+    },
+    {
+      "_id": {
+        "$oid": "639167444bc60571c02826ae"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "dQw4w9WgXcQ"
+    },
+    {
+      "_id": {
+        "$oid": "639167444bc60571c02826af"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "dQw4w9WgXcQ"
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473531553"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473698884"
+    }
+  },
+  "__v": 4
+},{
+  "_id": {
+    "$oid": "6391674e4bc60571c02826c8"
+  },
+  "name": "Rickrolls",
+  "ownerUser": "testuser1",
+  "ownerEmail": "testuser1@gmail.com",
+  "listens": 0,
+  "likes": 0,
+  "dislikes": 0,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "0"
+    }
+  },
+  "comments": [],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "639167444bc60571c02826ad"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "dQw4w9WgXcQ"
+    },
+    {
+      "_id": {
+        "$oid": "639167444bc60571c02826ae"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "dQw4w9WgXcQ"
+    },
+    {
+      "_id": {
+        "$oid": "639167444bc60571c02826af"
+      },
+      "title": "Untitled",
+      "artist": "?",
+      "youTubeId": "dQw4w9WgXcQ"
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473550215"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473556245"
+    }
+  },
+  "__v": 2
+},{
+  "_id": {
+    "$oid": "639167774bc60571c028271b"
+  },
+  "name": "Trial",
+  "ownerUser": "testuser2@gmail.com",
+  "ownerEmail": "testuser2@gmail.com",
+  "listens": 1,
+  "likes": 2,
+  "dislikes": 0,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "1670473599071"
+    }
+  },
+  "comments": [],
+  "songs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473591018"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473697507"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "639167814bc60571c0282741"
+  },
+  "name": "Nothing else",
+  "ownerUser": "testuser2@gmail.com",
+  "ownerEmail": "testuser2@gmail.com",
+  "listens": 0,
+  "likes": 2,
+  "dislikes": 0,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "1670473648979"
+    }
+  },
+  "comments": [],
+  "songs": [
+    {
+      "_id": {
+        "$oid": "639167ac4bc60571c0282785"
+      },
+      "title": "Paranoid",
+      "artist": "Black Sabbath",
+      "youTubeId": "0qanF-91aJo"
+    }
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473601337"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473698035"
+    }
+  },
+  "__v": 5
+},{
+  "_id": {
+    "$oid": "639167c84bc60571c02827b7"
+  },
+  "name": "Untitled(0)",
+  "ownerUser": "testuser3",
+  "ownerEmail": "testuser3@gmail.com",
+  "listens": 0,
+  "likes": 0,
+  "dislikes": 0,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "0"
+    }
+  },
+  "comments": [],
+  "songs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473672711"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473672711"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "639167ca4bc60571c02827bf"
+  },
+  "name": "Untitled(1)",
+  "ownerUser": "testuser3",
+  "ownerEmail": "testuser3@gmail.com",
+  "listens": 0,
+  "likes": 0,
+  "dislikes": 0,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "0"
+    }
+  },
+  "comments": [],
+  "songs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473674111"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473674111"
+    }
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "639167ca4bc60571c02827c7"
+  },
+  "name": "Untitled(2)",
+  "ownerUser": "testuser3",
+  "ownerEmail": "testuser3@gmail.com",
+  "listens": 0,
+  "likes": 0,
+  "dislikes": 0,
+  "publishDate": {
+    "$date": {
+      "$numberLong": "0"
+    }
+  },
+  "comments": [],
+  "songs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670473674711"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670473674711"
+    }
+  },
+  "__v": 0
+}]

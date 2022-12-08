@@ -18,7 +18,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import List from '@mui/material/List';
 import SongCard from './SongCard';
 import Button from '@mui/material/Button';
-import MUIRenameErrorModal from './MUIRenameErrorModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
