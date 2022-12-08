@@ -97,18 +97,18 @@ export default function AppBanner() {
     if (auth.loggedIn) {
         menu = loggedInMenu;
     }
-    else {
-        if (store.history.location.pathname == "/")
-            return "";
-    }
     console.log("auth in appbanner")
     console.log(auth);
     
     function getAccountMenu(loggedIn) {
         let userInitials = auth.getUserInitials();
         console.log("userInitials: " + userInitials);
-        if (loggedIn) 
+        if (loggedIn) {
+            if (auth.user == null) {
+                return <AccountCircle />
+            }
             return <div>{userInitials}</div>;
+        }
         else
             return <AccountCircle />;
     }

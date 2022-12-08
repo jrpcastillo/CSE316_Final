@@ -89,15 +89,8 @@ function SongCard(props) {
                             {index + 1}.
                         </Typography>
                         <Box sx={{ p: 1, flexGrow: 1 }}>
-                            <Typography fontSize={18}>
-                                <Link id={'song-' + index + '-link'}
-                                    className="song-link"
-                                    href={"https://www.youtube.com/watch?v=" + song.youTubeId}
-                                    target="_blank"
-                                >
-                                    
-                                        {song.title} by {song.artist}
-                                </Link>
+                            <Typography fontSize={18}>                                    
+                                {song.title} by {song.artist}
                             </Typography>
                         </Box>
                         <Box sx={{ p: 1 }}>
@@ -121,13 +114,7 @@ function SongCard(props) {
                             </Typography>
                             <Box sx={{ p: 1, flexGrow: 1 }}>
                                 <Typography fontSize={18}>
-                                    <Link id={'song-' + index + '-link'}
-                                        className="song-link"
-                                        href={"https://www.youtube.com/watch?v=" + song.youTubeId}
-                                        target="_blank"
-                                    >
                                         {song.title} by {song.artist}
-                                    </Link>
                                 </Typography>
                             </Box>
                         </ListItem>

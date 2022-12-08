@@ -382,70 +382,7 @@ const HomeScreen = () => {
                             </Tabs>
                         </Box>
                         <TabPanel value={value} index={0}>
-                            <YoutubePlaylisterReact
-                                
-                            />
-                            <Grid container>
-                                <Grid item container justifyContent='center' alignItems='center' xs={12}>
-                                    <Typography>
-                                        Now Playing
-                                    </Typography>
-                                </Grid>
-                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
-                                    <Typography>
-                                        { (store.currentList != null) ? "Playlist: " + store.currentList.name : "" }
-                                    </Typography>
-                                </Grid>
-                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
-                                    <Typography>
-                                        { (store.currentList != null) ? "Song#: " + store.currentList.songs.length : "" }
-                                    </Typography>
-                                </Grid>
-                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
-                                    <Typography>
-                                        { (store.currentList != null) ? "Title: " + store.currentList.songs[0].title : "" }
-                                    </Typography>
-                                </Grid>
-                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
-                                    <Typography>
-                                        { (store.currentList != null) ? "Artist: " + store.currentList.songs[0].artist : "" }
-                                    </Typography>
-                                </Grid>
-                                <Grid item container justifyContent='center' alignItems='center' xs={12}>
-                                    <Grid item>
-                                        <IconButton 
-                                            disabled={false}
-                                            onClick={handleViewAllLists}
-                                        >
-                                            <SkipPreviousIcon/>
-                                        </IconButton>
-                                    </Grid>
-                                    <Grid item>
-                                        <IconButton 
-                                            disabled={false}
-                                            onClick={handleViewAllLists}
-                                        >
-                                            <StopIcon/>
-                                        </IconButton>
-                                    </Grid>
-                                    <Grid item>
-                                        <IconButton 
-                                            disabled={false}
-                                            onClick={handleViewAllLists}
-                                        >
-                                            <PlayArrowIcon/>
-                                        </IconButton>
-                                    </Grid>
-                                    <Grid item>
-                                        <IconButton 
-                                                disabled={false}
-                                                onClick={handleViewAllLists}
-                                            >
-                                                <SkipNextIcon/>
-                                        </IconButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                            <YoutubePlaylisterReact />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <Grid container sx={{ height: '100%' }}>

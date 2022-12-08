@@ -39,13 +39,15 @@ function ListCard(props) {
 
     function handleClick(event, id) {
         // DOUBLE CLICK IS FOR SONG EDITING
+ 
         if (event.detail === 2) {
             event.stopPropagation();
             if (Date.parse(idNamePair.publishDate) == Date.parse(dateRef)) {
                 handleToggleEdit(event);
+                return;
             }
         }
-        if (event.detail === 1) {
+        else if (event.detail === 1) {
             event.stopPropagation();
             console.log("handleLoadList for " + id);
             if (!event.target.disabled) {
@@ -230,6 +232,9 @@ function ListCard(props) {
     // button show:
     let deleteShown = "";
     let duplicateShown = <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDuplicate}>Duplicate</Button>;
+    if (auth.user == null) {
+        duplicateShown = "";
+    }
     if (store.viewMode == 0) {
         deleteShown = <Button variant='contained' disabled={(store.listNameActive)} onClick={handleDeleteList}>Delete</Button>;
     }

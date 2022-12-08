@@ -38,6 +38,20 @@ body {
   left: 0%;
 }
 
+.react-player {
+  width: 100%;
+  height: 100%;
+}
+
+.player-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.react-player > div {
+  position: absolute;
+}
+
 #simple-tabpanel-1 {
   display: inline-block;
   height: 1;
