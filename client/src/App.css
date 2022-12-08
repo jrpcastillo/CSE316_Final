@@ -38,6 +38,29 @@ body {
   left: 0%;
 }
 
+#simple-tabpanel-1 {
+  display: inline-block;
+  height: 1;
+}
+
+#comments-tab {
+  display: inline-block;
+  height: 10;
+  max-width: 100%;
+  overflow-y: auto;
+  word-wrap: break-word;
+}
+
+#comments-text {
+  max-height: 90%;
+  max-width: 100%;
+
+}
+#comments-box {
+  max-width: 100%;
+  height: 10%;
+}
+
 #top5-banner {
   position: absolute;
   left: 0%;
@@ -67,6 +90,10 @@ body {
 #edit-toolbar {
   background-color: transparent;
   float: right;
+}
+
+.tabpanel {
+  height: 100%;
 }
 
 .top5-button,

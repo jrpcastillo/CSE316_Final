@@ -607,6 +607,7 @@ function GlobalStoreContextProvider(props) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 tps.clearAllTransactions();
+                store.expandedList = response.data.playlist;
                 storeReducer({
                     type: GlobalStoreActionType.EXPAND_LIST,
                     payload: { playlist: response.data.playlist }
@@ -623,8 +624,18 @@ function GlobalStoreContextProvider(props) {
             payload: { id: null }
         })
     }
-
-
+    // comments
+    store.addComment = async function (id, author, text) {
+        let comment = {
+            author: author,
+            text: text
+        };
+        store.currentList.comments.push(comment);
+        let response = await api.updatePlaylistById(id, store.currentList);
+        if (response.data.success) {
+            store.loadOption();
+        }
+    }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE

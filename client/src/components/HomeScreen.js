@@ -27,14 +27,23 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton';
 import { useFormControl } from '@mui/material/FormControl';
-
-
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import PropTypes from 'prop-types';
+import YoutubePlaylisterReact from './YoutubePlaylisterReact';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import ListItem from '@mui/material/ListItem';
 
 const HomeScreen = () => {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const [text, setText] = useState("");
+    const [comment, setComment] = useState("");
+    const [value, setValue] = useState(0);
     const isMenuOpen = Boolean(anchorEl);
 
     const handleSortMenuOpen = (event) => {
@@ -124,6 +133,55 @@ const HomeScreen = () => {
             store.currentList = null;
             store.getOtherPlaylists(text);
         }
+    }
+
+    // tabs
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+      
+        return (
+          <Box
+            hidden={value !== index}
+            sx={{ height: '93%' }}
+          >
+            {value === index && (
+              <Box sx={{ height: '100%' }}>
+                {children}
+              </Box>
+            )}
+          </Box>
+        );
+      }
+      
+      TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.number.isRequired,
+        value: PropTypes.number.isRequired,
+      };
+      
+      function a11yProps(index) {
+        return {
+          id: `simple-tab-${index}`,
+          'aria-controls': `simple-tabpanel-${index}`,
+        };
+      }
+      
+
+    const handleTabChange = (event, newValue) => {
+        event.stopPropagation();
+        setValue(newValue);
+    }
+
+    // comments
+
+    const handleComment = (event) => {
+        event.preventDefault();
+        console.log(comment);
+        if (comment !== "") {
+            store.addComment(store.currentList._id, auth.user.username, comment);
+            setComment("");
+        }        
     }
 
     // keybinds for undo/redo if needed
@@ -273,6 +331,8 @@ const HomeScreen = () => {
                         <InputBase
                             sx={{ ml: 1, width: '95%', overflowX: 'hidden' }}
                             placeholder="Search"
+                            key="search"
+                            autoFocus
                             value={text}
                             inputProps={{ 'aria-label': 'search playlists'}}
                             onChange={e => setText(e.target.value)}
@@ -305,7 +365,7 @@ const HomeScreen = () => {
             </Grid>
             { menu }
             <Grid container sx={{ height: '93%' }}>
-                <Grid item xs={7} sx={{ overflowY: 'auto', height: '100%'}}>
+                <Grid item xs={7} sx={{ overflowY: 'auto', height: '100%', border: 2, mt: 1 }}>
                     <Grid container>
                         {/* <Grid item xs={12}>
                             listCard
@@ -313,10 +373,129 @@ const HomeScreen = () => {
                         { listCard }
                     </Grid>
                 </Grid>
-                <Grid item xs={5}>
-                    <Grid container sx={{ height: '100%'}}>
-                        test
-                    </Grid>
+                <Grid item xs={5} sx={{ maxWidth: '100%', height: '100%', border: 2, mt: 1 }}>
+                    <Box sx={{ width: '100%', height: '100%' }}>
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
+                                <Tab label="Player" {...a11yProps(0)} />
+                                <Tab label="Comments" {...a11yProps(1)} />
+                            </Tabs>
+                        </Box>
+                        <TabPanel value={value} index={0}>
+                            <YoutubePlaylisterReact
+                                
+                            />
+                            <Grid container>
+                                <Grid item container justifyContent='center' alignItems='center' xs={12}>
+                                    <Typography>
+                                        Now Playing
+                                    </Typography>
+                                </Grid>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
+                                    <Typography>
+                                        { (store.currentList != null) ? "Playlist: " + store.currentList.name : "" }
+                                    </Typography>
+                                </Grid>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
+                                    <Typography>
+                                        { (store.currentList != null) ? "Song#: " + store.currentList.songs.length : "" }
+                                    </Typography>
+                                </Grid>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
+                                    <Typography>
+                                        { (store.currentList != null) ? "Title: " + store.currentList.songs[0].title : "" }
+                                    </Typography>
+                                </Grid>
+                                <Grid item container justifyContent='flex-start' alignItems='center' xs={12}>
+                                    <Typography>
+                                        { (store.currentList != null) ? "Artist: " + store.currentList.songs[0].artist : "" }
+                                    </Typography>
+                                </Grid>
+                                <Grid item container justifyContent='center' alignItems='center' xs={12}>
+                                    <Grid item>
+                                        <IconButton 
+                                            disabled={false}
+                                            onClick={handleViewAllLists}
+                                        >
+                                            <SkipPreviousIcon/>
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item>
+                                        <IconButton 
+                                            disabled={false}
+                                            onClick={handleViewAllLists}
+                                        >
+                                            <StopIcon/>
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item>
+                                        <IconButton 
+                                            disabled={false}
+                                            onClick={handleViewAllLists}
+                                        >
+                                            <PlayArrowIcon/>
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item>
+                                        <IconButton 
+                                                disabled={false}
+                                                onClick={handleViewAllLists}
+                                            >
+                                                <SkipNextIcon/>
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <Grid container sx={{ height: '100%' }}>
+                                <Grid item container xs={12} sx={{ height: '80%' }}>
+                                    <List sx={{ width: '100%', height: '100%', alignItems: 'flex-start', pl: 1, pr: 1, overflowY: 'auto' }}>
+                                        {
+                                            (store.currentList != null)
+                                            ?
+                                                store.currentList.comments.map((pair) => (
+                                                    <ListItem
+                                                        sx={{ marginTop: '15px', display: 'flex', p: 1, border: 0 , borderColor: '#', borderRadius: 2, bgcolor: '#82C4E4', width: '100%' }}
+                                                        style={{ wordWrap: 'break-text' }}
+                                                        >
+                                                        <Grid container sx={{ width: '100%' }}>
+                                                            <Grid item container justifyContent='flex-start' alignItems='flex-start' xs={12}>
+                                                                <Typography fontSize={12} style={{ whiteSpace: 'nowrap', fontSize: 12, mr: 1,  overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                                { pair.author +":" }
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item container justifyContent='flex-start' alignItems='flex-start' xs={12} sx={{ width: '100%' }}>
+                                                                <Typography fontSize={20} sx={{ width: '100%' }} style={{ wordWrap: 'break-word', fontSize: 20, mr: 1, whiteSpace: 'normal' }}>
+                                                                    { pair.text }
+                                                                </Typography>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </ListItem>
+                                                ))
+                                            : ""
+                                        }
+                                        </List>
+                                </Grid>
+                                <Grid item container justifyContent='center' alignItems='center' xs={12} sx={{ height: '20%' }}>
+                                    { (store.currentList != null)
+                                    ? <Paper component="form" sx={{ height: '60%', width: '90%' }} onSubmit={handleComment}>
+                                        <InputBase
+                                            sx={{ ml: 1, width: '95%', overflowX: 'hidden' }}
+                                            placeholder="Comment"
+                                            key="comment"
+                                            value={comment}
+                                            inputProps={{ 'aria-label': 'add comments'}}
+                                            onChange={e => setComment(e.target.value)}
+                                            autoFocus
+                                        />  
+                                    </Paper>
+                                    : ""
+                                    }
+                                </Grid>
+                            </Grid>
+                        </TabPanel>
+                    </Box>
                 </Grid>
             </Grid>
             { modalJSX }
