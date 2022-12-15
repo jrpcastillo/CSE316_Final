@@ -4,4 +4,3 @@ server/node_modules
 # Added ignores
 **/.DS_Store
 .vscode/
-**/.env
